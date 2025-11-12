@@ -1,0 +1,42 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Source Sans 3', sans-serif;
+
+  --color-red-50: #fff0f0;
+  --color-red-100: #ffddde;
+  --color-red-200: #ffc0c1;
+  --color-red-300: #ff9597;
+  --color-red-400: #ff585b;
+  --color-red-500: #ff2428;
+  --color-red-600: #fe1115;
+  --color-red-700: #d60004;
+  --color-red-800: #b10306;
+  --color-red-900: #910b0d;
+  --color-red-950: #500001;
+
+  --color-azure-radiance-50: #edfaff;
+  --color-azure-radiance-100: #d7f1ff;
+  --color-azure-radiance-200: #b7e9ff;
+  --color-azure-radiance-300: #85ddff;
+  --color-azure-radiance-400: #4cc8ff;
+  --color-azure-radiance-500: #23a9ff;
+  --color-azure-radiance-600: #0c8cff;
+  --color-azure-radiance-700: #0573f0;
+  --color-azure-radiance-800: #0b5cc2;
+  --color-azure-radiance-900: #104f98;
+  --color-azure-radiance-950: #0f315c;
+
+
+
+}
+
+@layer components {
+  .btn-primary {
+    @apply px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-full hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 cursor-pointer;
+  }
+
+  .btn-secondary {
+    @apply px-4 py-2 bg-white text-blue-600 text-sm font-medium rounded-full border border-blue-600 hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 cursor-pointer;
+  }
+}

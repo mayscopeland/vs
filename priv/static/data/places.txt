@@ -1,0 +1,216 @@
+Aberdeen
+Akron
+Alabama
+Alaska
+Alberta
+Albuquerque
+Altoona
+Amarillo
+Anaheim
+Arizona
+Arkansas
+Arlington
+Asheville
+Atlanta
+Augusta
+Austin
+Baltimore
+Beloit
+Binghamton
+Birmingham
+Boston
+Bowie
+Bowling Green
+Bradenton
+British Columbia
+Brooklyn
+Buffalo
+Calgary
+California
+Carolina
+Cedar Rapids
+Charleston
+Charlotte
+Chattanooga
+Chicago
+Cincinnati
+Clearwater
+Cleveland
+Colorado
+Columbia
+Columbus
+Connecticut
+Corpus Christi
+Dallas
+Daytona
+Delaware
+Delmarva
+Denver
+Detroit
+Down East
+Dunedin
+Durham
+Edmonton
+El Paso
+Erie
+Eugene
+Everett
+Fayetteville
+Florida
+Fort Myers
+Fort Wayne
+Frederick
+Fresno
+Frisco
+Georgia
+Golden State
+Great Lakes
+Green Bay
+Greensboro
+Greenville
+Gwinnett
+Harlem
+Harrisburg
+Hartford
+Hawaii
+Hickory
+Hillsboro
+Houston
+Hudson Valley
+Idaho
+Illinois
+Indiana
+Indianapolis
+Inland Empire
+Iowa
+Jacksonville
+Jersey Shore
+Jupiter
+Kannapolis
+Kansas
+Kansas City
+Kentucky
+Lake County
+Lake Elsinore
+Lakeland
+Lansing
+Las Vegas
+Lehigh Valley
+Lexington
+Long Island
+Los Angeles
+Louisiana
+Louisville
+Lynchburg
+Maine
+Manitoba
+Maryland
+Massachusetts
+Memphis
+Miami
+Michigan
+Midland
+Milwaukee
+Minneapolis
+Minnesota
+Mississippi
+Modesto
+Montana
+Montgomery
+Montreal
+Myrtle Beach
+Nashville
+Nebraska
+Nevada
+New Brunswick
+New England
+New Hampshire
+New Jersey
+New Mexico
+New Orleans
+New York
+Newfoundland
+Norfolk
+North Carolina
+North Dakota
+Northwest Arkansas
+Northwest Territories
+Nova Scotia
+Nunavut
+Oakland
+Ohio
+Oklahoma
+Oklahoma City
+Omaha
+Ontario
+Oregon
+Orlando
+Ottawa
+Palm Beach
+Pennsylvania
+Pensacola
+Peoria
+Philadelphia
+Phoenix
+Pittsburgh
+Portland
+Prince Edward Island
+Puerto Rico
+Quad Cities
+Quebec
+Rancho Cucamonga
+Reading
+Reno
+Rhode Island
+Richmond
+Rochester
+Rocket City
+Rome
+Round Rock
+Sacramento
+Salem
+Salt Lake
+San Antonio
+San Diego
+San Francisco
+San Jose
+Saskatchewan
+Savannah
+Scranton
+Seattle
+Somerset
+South Bend
+South Carolina
+South Dakota
+Spokane
+St. Louis
+St. Lucie
+St. Paul
+Stockton
+Sugar Land
+Syracuse
+Tacoma
+Tampa Bay
+Tennessee
+Texas
+Toledo
+Toronto
+Trenton
+Tri-City
+Tulsa
+Utah
+Vancouver
+Vegas
+Vermont
+Virginia
+Washington
+West Michigan
+West Virginia
+Wichita
+Wilmington
+Winnipeg
+Winston-Salem
+Wisconsin
+Worcester
+Wyoming
+Yukon

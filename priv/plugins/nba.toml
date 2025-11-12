@@ -1,0 +1,282 @@
+contest_type = "NBA"
+
+[season]
+year = 2025
+start_date = "2025-10-15"
+end_date = "2026-04-15"
+
+# Periods - NBA regular season is ~26 weeks
+[[periods]]
+name = "Week 1"
+sequence = 1
+start_date = "2025-10-15"
+end_date = "2025-10-21"
+is_playoff = false
+
+[[periods]]
+name = "Week 2"
+sequence = 2
+start_date = "2025-10-22"
+end_date = "2025-10-28"
+is_playoff = false
+
+[[periods]]
+name = "Week 3"
+sequence = 3
+start_date = "2025-10-29"
+end_date = "2025-11-04"
+is_playoff = false
+
+[[periods]]
+name = "Week 4"
+sequence = 4
+start_date = "2025-11-05"
+end_date = "2025-11-11"
+is_playoff = false
+
+[[periods]]
+name = "Week 5"
+sequence = 5
+start_date = "2025-11-12"
+end_date = "2025-11-18"
+is_playoff = false
+
+[[periods]]
+name = "Week 6"
+sequence = 6
+start_date = "2025-11-19"
+end_date = "2025-11-25"
+is_playoff = false
+
+[[periods]]
+name = "Week 7"
+sequence = 7
+start_date = "2025-11-26"
+end_date = "2025-12-02"
+is_playoff = false
+
+[[periods]]
+name = "Week 8"
+sequence = 8
+start_date = "2025-12-03"
+end_date = "2025-12-09"
+is_playoff = false
+
+[[periods]]
+name = "Week 9"
+sequence = 9
+start_date = "2025-12-10"
+end_date = "2025-12-16"
+is_playoff = false
+
+[[periods]]
+name = "Week 10"
+sequence = 10
+start_date = "2025-12-17"
+end_date = "2025-12-23"
+is_playoff = false
+
+[[periods]]
+name = "Week 11"
+sequence = 11
+start_date = "2025-12-24"
+end_date = "2025-12-30"
+is_playoff = false
+
+[[periods]]
+name = "Week 12"
+sequence = 12
+start_date = "2025-12-31"
+end_date = "2026-01-06"
+is_playoff = false
+
+[[periods]]
+name = "Week 13"
+sequence = 13
+start_date = "2026-01-07"
+end_date = "2026-01-13"
+is_playoff = false
+
+[[periods]]
+name = "Week 14"
+sequence = 14
+start_date = "2026-01-14"
+end_date = "2026-01-20"
+is_playoff = false
+
+[[periods]]
+name = "Week 15"
+sequence = 15
+start_date = "2026-01-21"
+end_date = "2026-01-27"
+is_playoff = false
+
+[[periods]]
+name = "Week 16"
+sequence = 16
+start_date = "2026-01-28"
+end_date = "2026-02-03"
+is_playoff = false
+
+[[periods]]
+name = "Week 17"
+sequence = 17
+start_date = "2026-02-04"
+end_date = "2026-02-10"
+is_playoff = false
+
+[[periods]]
+name = "Week 18"
+sequence = 18
+start_date = "2026-02-11"
+end_date = "2026-02-17"
+is_playoff = false
+
+[[periods]]
+name = "Week 19"
+sequence = 19
+start_date = "2026-02-18"
+end_date = "2026-02-24"
+is_playoff = false
+
+[[periods]]
+name = "Week 20"
+sequence = 20
+start_date = "2026-02-25"
+end_date = "2026-03-03"
+is_playoff = false
+
+[[periods]]
+name = "Week 21"
+sequence = 21
+start_date = "2026-03-04"
+end_date = "2026-03-10"
+is_playoff = false
+
+[[periods]]
+name = "Week 22"
+sequence = 22
+start_date = "2026-03-11"
+end_date = "2026-03-17"
+is_playoff = false
+
+[[periods]]
+name = "Week 23"
+sequence = 23
+start_date = "2026-03-18"
+end_date = "2026-03-24"
+is_playoff = false
+
+[[periods]]
+name = "Week 24"
+sequence = 24
+start_date = "2026-03-25"
+end_date = "2026-03-31"
+is_playoff = false
+
+[[periods]]
+name = "Week 25"
+sequence = 25
+start_date = "2026-04-01"
+end_date = "2026-04-07"
+is_playoff = false
+
+[[periods]]
+name = "Week 26"
+sequence = 26
+start_date = "2026-04-08"
+end_date = "2026-04-15"
+is_playoff = false
+
+# Roster positions
+[[roster_positions]]
+position = "PG"
+count = 1
+sequence = 1
+
+[[roster_positions]]
+position = "SG"
+count = 1
+sequence = 2
+
+[[roster_positions]]
+position = "SF"
+count = 1
+sequence = 3
+
+[[roster_positions]]
+position = "PF"
+count = 1
+sequence = 4
+
+[[roster_positions]]
+position = "C"
+count = 1
+sequence = 5
+
+[[roster_positions]]
+position = "G"
+count = 1
+sequence = 6
+
+[[roster_positions]]
+position = "F"
+count = 1
+sequence = 7
+
+[[roster_positions]]
+position = "UT"
+count = 2
+sequence = 8
+
+[[roster_positions]]
+position = "BN"
+count = 3
+sequence = 9
+
+# Scoring categories (category-based scoring)
+[[scoring_categories]]
+name = "PTS"
+multiplier = 1.0
+sequence = 1
+
+[[scoring_categories]]
+name = "REB"
+multiplier = 1.0
+sequence = 2
+
+[[scoring_categories]]
+name = "AST"
+multiplier = 1.0
+sequence = 3
+
+[[scoring_categories]]
+name = "STL"
+multiplier = 1.0
+sequence = 4
+
+[[scoring_categories]]
+name = "BLK"
+multiplier = 1.0
+sequence = 5
+
+[[scoring_categories]]
+name = "FG%"
+multiplier = 1.0
+sequence = 6
+
+[[scoring_categories]]
+name = "FT%"
+multiplier = 1.0
+sequence = 7
+
+[[scoring_categories]]
+name = "3PM"
+multiplier = 1.0
+sequence = 8
+
+[[scoring_categories]]
+name = "TO"
+multiplier = -1.0
+sequence = 9
+

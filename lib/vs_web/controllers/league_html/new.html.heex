@@ -1,0 +1,106 @@
+<div class="max-w-2xl mx-auto">
+  <h1 class="text-3xl font-bold text-gray-900 mb-8">Create a New League</h1>
+
+  <div class="bg-white shadow sm:rounded-lg">
+    <div class="px-4 py-5 sm:p-6">
+      <form
+        id="league-form"
+        method="post"
+        action={~p"/leagues/add"}
+        class="space-y-6"
+      >
+        <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
+
+        <!-- League Name -->
+        <div>
+          <label
+            for="league_name"
+            class="block text-sm font-medium text-gray-700"
+          >
+            League Name
+          </label>
+          <input
+            type="text"
+            name="league_name"
+            id="league_name"
+            required
+            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            placeholder="My Fantasy League"
+          />
+        </div>
+
+        <!-- Contest Type -->
+        <div>
+          <label
+            for="contest_type"
+            class="block text-sm font-medium text-gray-700"
+          >
+            Contest Type
+          </label>
+          <select
+            name="contest_type"
+            id="contest_type"
+            required
+            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+          >
+            <option value="">Select a contest type...</option>
+            <%= for contest_type <- @contest_types do %>
+              <option value={contest_type}><%= contest_type %></option>
+            <% end %>
+          </select>
+        </div>
+
+        <!-- Team Count -->
+        <div>
+          <label
+            for="team_count"
+            class="block text-sm font-medium text-gray-700"
+          >
+            Number of Teams
+          </label>
+          <input
+            type="number"
+            name="team_count"
+            id="team_count"
+            min="2"
+            max="20"
+            value="8"
+            required
+            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+          />
+        </div>
+
+        <!-- Submit Button -->
+        <div>
+          <button
+            type="submit"
+            id="submit-btn"
+            class="btn-primary w-full flex justify-center"
+          >
+            Create league
+          </button>
+        </div>
+      </form>
+
+      <div class="mt-4 text-sm text-gray-500">
+        <p>
+          Creating a league will load player data for the selected contest type.
+          This may take a few moments.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.getElementById('league-form').addEventListener('submit', function() {
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    btn.textContent = 'Creating League...';
+    btn.classList.add('opacity-75', 'cursor-not-allowed');
+  });
+</script>
+
+
+
+

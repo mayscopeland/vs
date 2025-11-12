@@ -1,0 +1,48 @@
+<div>
+  <!-- Header -->
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-900">Edit Roster</h1>
+    <p class="mt-2 text-sm text-gray-600">
+      <%= @team.name %> · <%= @league.name %>
+    </p>
+  </div>
+
+  <%= if @current_period do %>
+    <div class="mb-6 bg-blue-50 border border-blue-200 rounded-md p-4">
+      <p class="text-sm text-blue-800">
+        Editing roster for: <span class="font-medium"><%= @current_period.name %></span>
+      </p>
+    </div>
+  <% end %>
+
+  <!-- TODO: Implement roster editing functionality -->
+  <div class="bg-white shadow sm:rounded-lg">
+    <div class="px-4 py-5 sm:p-6">
+      <h3 class="text-lg font-medium text-gray-900 mb-4">
+        Roster Management
+      </h3>
+      <p class="text-sm text-gray-600 mb-6">
+        Roster editing functionality will be implemented here. You'll be able to add and remove players from your roster.
+      </p>
+
+      <div class="flex gap-4">
+        <a
+          href={~p"/leagues/#{@league.id}/teams/#{@team.id}"}
+          class="btn-secondary inline-flex items-center"
+        >
+          Back to team
+        </a>
+        <a
+          href={~p"/leagues/#{@league.id}/players"}
+          class="btn-primary inline-flex items-center"
+        >
+          Browse players
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
