@@ -5,13 +5,17 @@ defmodule VsWeb.PlayerController do
   alias Vs.{Leagues, Players, Repo}
   alias Vs.Stats.{Calculator, Formatter}
 
-  def list(conn, %{"league_id" => league_id}) do
+  def list(conn, %{"league_id" => league_id} = params) do
     league =
       league_id
       |> Leagues.get_league!()
       |> Repo.preload(scoring_categories: from(sc in Vs.ScoringCategory, order_by: sc.sequence))
 
-    players = Players.list_available_players(league_id)
+    page = Map.get(params, "page", "1") |> String.to_integer()
+    per_page = 50
+
+    {players, total_count} = Players.list_available_players(league_id, page: page, per_page: per_page)
+    total_pages = ceil(total_count / per_page)
 
     # Get aggregated stats for all players
     player_ids = Enum.map(players, & &1.id)
@@ -53,7 +57,9 @@ defmodule VsWeb.PlayerController do
       players: players,
       scoring_categories: league.scoring_categories,
       player_stats: enhanced_stats,
-      page_title: "#{league.name} - Players"
+      page_title: "#{league.name} - Players",
+      page: page,
+      total_pages: total_pages
     )
   end
 end

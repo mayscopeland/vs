@@ -13,8 +13,11 @@ defmodule Vs.Players do
   This finds all scorers for the league's universe that are not
   currently on any team's roster in the league.
   """
-  def list_available_players(league_id) do
+  def list_available_players(league_id, opts \\ []) do
     league = Repo.get!(League, league_id) |> Repo.preload(:universe)
+    page = Keyword.get(opts, :page, 1)
+    per_page = Keyword.get(opts, :per_page, 50)
+    offset = (page - 1) * per_page
 
     # Get all scorer IDs that are rostered in this league
     rostered_scorer_ids =
@@ -27,12 +30,24 @@ defmodule Vs.Players do
       )
       |> Repo.all()
 
-    # Get all scorers for this universe that are not rostered
-    Scorer
-    |> where([s], s.universe_id == ^league.universe.id)
-    |> where([s], s.id not in ^rostered_scorer_ids)
-    |> order_by([s], asc: s.name)
-    |> Repo.all()
+    # Base query for available scorers
+    query =
+      Scorer
+      |> where([s], s.universe_id == ^league.universe.id)
+      |> where([s], s.id not in ^rostered_scorer_ids)
+
+    # Get total count
+    total_count = Repo.aggregate(query, :count, :id)
+
+    # Get paginated results
+    players =
+      query
+      |> order_by([s], asc: s.name)
+      |> limit(^per_page)
+      |> offset(^offset)
+      |> Repo.all()
+
+    {players, total_count}
   end
 
   @doc """
