@@ -8,10 +8,8 @@
   </div>
 
   <!-- Teams/Standings Table -->
-  <div class="bg-white shadow overflow-hidden sm:rounded-lg">
-    <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
-      <h2 class="text-lg font-medium text-gray-900">Teams & Standings</h2>
-    </div>
+  <div class="p-6 bg-white shadow overflow-hidden sm:rounded-lg">
+    <h2 class="mb-4 text-2xl font-medium text-gray-900">Standings</h2>
     <div class="overflow-x-auto">
       <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-gray-50">
@@ -84,21 +82,6 @@
     </div>
   </div>
 
-  <!-- Quick Actions -->
-  <div class="mt-6 flex gap-4">
-    <a
-      href={~p"/leagues/#{@league.id}/teams/"}
-      class="btn-primary inline-flex items-center"
-    >
-      View team
-    </a>
-    <a
-      href={~p"/leagues/#{@league.id}/players"}
-      class="btn-secondary inline-flex items-center"
-    >
-      Browse players
-    </a>
-  </div>
 </div>
 
 

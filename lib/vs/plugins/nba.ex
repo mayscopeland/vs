@@ -22,39 +22,6 @@ defmodule Vs.Plugins.NBA do
   ]
 
   @impl true
-  def get_initial_data(season) do
-    season_string = format_season(season)
-
-    url = "#{@base_url}/commonallplayers"
-
-    params = [
-      LeagueID: "00",
-      Season: season_string,
-      IsOnlyCurrentSeason: "1"
-    ]
-
-    case HTTPoison.get(url, @headers, params: params, timeout: 20_000, recv_timeout: 20_000) do
-      {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
-        decompressed_body = decompress_if_needed(body)
-
-        case Jason.decode(decompressed_body) do
-          {:ok, data} ->
-            scorers = parse_initial_players(data)
-            {:ok, %{scorers: scorers}}
-
-          {:error, reason} ->
-            {:error, {:json_decode_error, reason}}
-        end
-
-      {:ok, %HTTPoison.Response{status_code: status_code}} ->
-        {:error, {:http_error, status_code}}
-
-      {:error, %HTTPoison.Error{reason: reason}} ->
-        {:error, {:http_request_failed, reason}}
-    end
-  end
-
-  @impl true
   def get_schedule(date) do
     date_struct = normalize_date(date)
     game_date = format_game_date(date_struct)
@@ -170,47 +137,6 @@ defmodule Vs.Plugins.NBA do
     case Date.from_iso8601(date_string) do
       {:ok, date} -> date
       {:error, _} -> raise "Invalid date string: #{date_string}"
-    end
-  end
-
-  defp parse_initial_players(data) do
-    result_sets = Map.get(data, "resultSets", [])
-
-    if result_sets == [] do
-      []
-    else
-      result_set = List.first(result_sets)
-      headers = Map.get(result_set, "headers", [])
-      rows = Map.get(result_set, "rowSet", [])
-
-      raw_players =
-        Enum.map(rows, fn row ->
-          headers
-          |> Enum.zip(row)
-          |> Map.new()
-        end)
-
-      Enum.reduce(raw_players, [], fn player, acc ->
-        name =
-          player["DISPLAY_FIRST_LAST"] || player["PLAYER_NAME"] || ""
-
-        if name == "" do
-          acc
-        else
-          team = player["TEAM_ABBREVIATION"] || player["TEAM"]
-          position = player["POSITION"]
-
-          scorer = %{
-            name: name,
-            team: team,
-            position: position,
-            contest_type: "NBA"
-          }
-
-          [scorer | acc]
-        end
-      end)
-      |> Enum.reverse()
     end
   end
 

@@ -5,12 +5,12 @@ defmodule Vs.Players do
 
   import Ecto.Query, warn: false
   alias Vs.Repo
-  alias Vs.{Scorer, RosterScorer, League}
+  alias Vs.{Scorer, RosterScorer, League, Observation}
 
   @doc """
   Returns all scorers/players that are not rostered in a specific league.
 
-  This finds all scorers for the league's contest type and season that are not
+  This finds all scorers for the league's universe that are not
   currently on any team's roster in the league.
   """
   def list_available_players(league_id) do
@@ -27,9 +27,9 @@ defmodule Vs.Players do
       )
       |> Repo.all()
 
-    # Get all scorers for this contest type that are not rostered
+    # Get all scorers for this universe that are not rostered
     Scorer
-    |> where([s], s.contest_type == ^league.universe.contest_type)
+    |> where([s], s.universe_id == ^league.universe.id)
     |> where([s], s.id not in ^rostered_scorer_ids)
     |> order_by([s], asc: s.name)
     |> Repo.all()
@@ -45,13 +45,13 @@ defmodule Vs.Players do
   end
 
   @doc """
-  Checks if players have been loaded for a specific contest type and season.
+  Checks if players have been loaded for a specific universe.
 
-  Returns true if at least one scorer exists for the contest type.
+  Returns true if at least one scorer exists for the universe.
   """
-  def players_loaded_for_contest?(contest_type, _season_year) do
+  def players_loaded_for_universe?(universe_id) do
     Scorer
-    |> where([s], s.contest_type == ^contest_type)
+    |> where([s], s.universe_id == ^universe_id)
     |> limit(1)
     |> Repo.one()
     |> case do
@@ -59,4 +59,38 @@ defmodule Vs.Players do
       _ -> true
     end
   end
+
+  @doc """
+  Gets aggregated stats for a list of players for a specific season.
+
+  Returns a map of %{scorer_id => %{"PTS" => 123, "FGM" => 45, ...}}
+  """
+  def get_player_stats(player_ids, season_year) when is_list(player_ids) do
+    # Query all observations for these players in this season
+    observations =
+      Observation
+      |> where([o], o.scorer_id in ^player_ids)
+      |> where([o], o.season_year == ^season_year)
+      |> select([o], %{scorer_id: o.scorer_id, metric: o.metric, value: o.value})
+      |> Repo.all()
+
+    # Group by scorer_id and metric, summing the values
+    observations
+    |> Enum.group_by(& &1.scorer_id)
+    |> Enum.map(fn {scorer_id, obs} ->
+      stats =
+        obs
+        |> Enum.group_by(& &1.metric)
+        |> Enum.map(fn {metric, values} ->
+          total = Enum.reduce(values, 0, fn v, acc -> acc + v.value end)
+          {metric, total}
+        end)
+        |> Map.new()
+
+      {scorer_id, stats}
+    end)
+    |> Map.new()
+  end
+
+  def get_player_stats(_, _), do: %{}
 end

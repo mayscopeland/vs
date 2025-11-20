@@ -571,6 +571,39 @@ defmodule VsWeb.CoreComponents do
   end
 
   @doc """
+  Renders player information with name, team, and position badges.
+
+  ## Examples
+
+      <.player_info name="John Doe" team="LAL" position="PG-SG" />
+      <.player_info name="Jane Smith" team="BOS" position="C" />
+  """
+  attr :name, :string, required: true
+  attr :team, :string, default: nil
+  attr :position, :string, default: nil
+
+  def player_info(assigns) do
+    positions = if assigns.position, do: String.split(assigns.position, "-"), else: []
+    assigns = assign(assigns, :positions, positions)
+
+    ~H"""
+    <div class="flex items-center gap-1">
+      <span class="text-sm font-medium text-gray-900">
+        <%= @name %>
+      </span>
+      <span class="text-xs text-gray-500">
+        <%= @team || "N/A" %>
+      </span>
+      <%= for position <- @positions do %>
+        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+          <%= position %>
+        </span>
+      <% end %>
+    </div>
+    """
+  end
+
+  @doc """
   Renders a [Heroicon](https://heroicons.com).
 
   Heroicons come in three styles – outline, solid, and mini.

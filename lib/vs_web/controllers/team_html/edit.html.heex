@@ -15,6 +15,50 @@
     </div>
   <% end %>
 
+  <!-- Team Settings -->
+  <div class="bg-white shadow sm:rounded-lg mb-6">
+    <div class="px-4 py-5 sm:p-6">
+      <h3 class="text-lg font-medium text-gray-900 mb-4">
+        Team Settings
+      </h3>
+
+      <.form :let={f} for={@changeset} action={~p"/leagues/#{@league.id}/teams/#{@team.id}"} method="put">
+        <div class="mb-4">
+          <.input field={f[:name]} label="Name" class="block text-sm font-medium text-gray-700" />
+        </div>
+
+        <div class="mb-6">
+          <.label for="color_scheme_id">Color Scheme</.label>
+          <div class="grid grid-cols-2 gap-4 sm:grid-cols-4 mt-2">
+            <%= for scheme <- @color_schemes do %>
+              <label class="relative flex cursor-pointer rounded-lg border bg-white p-4 shadow-sm focus:outline-none">
+                <input type="radio" name={f[:color_scheme_id].name} value={scheme.id} class="sr-only" checked={f[:color_scheme_id].value == scheme.id} />
+                <span class="flex flex-1">
+                  <span class="flex flex-col">
+                    <span class="block text-sm font-medium text-gray-900 mb-2">
+                      <%= scheme.name %>
+                    </span>
+                    <span class="flex space-x-2">
+                      <span class="size-6 rounded-full border border-gray-200" style={"background-color: #{scheme.primary}"} title="Primary"></span>
+                      <span class="size-6 rounded-full border border-gray-200" style={"background-color: #{scheme.accent}"} title="Accent"></span>
+                      <span class="size-6 rounded-full border border-gray-200 flex items-center justify-center bg-gray-100" style={"color: #{scheme.text}"} title="Text">A</span>
+                    </span>
+                  </span>
+                </span>
+                <span class={"pointer-events-none absolute -inset-px rounded-lg border-2 #{if f[:color_scheme_id].value == scheme.id, do: "border-indigo-500", else: "border-transparent"}"} aria-hidden="true"></span>
+              </label>
+            <% end %>
+          </div>
+          <.error :for={msg <- translate_errors(f.errors || [], :color_scheme_id)}><%= msg %></.error>
+        </div>
+
+        <div class="flex justify-end">
+          <.button class="btn-primary">Save Changes</.button>
+        </div>
+      </.form>
+    </div>
+  </div>
+
   <!-- TODO: Implement roster editing functionality -->
   <div class="bg-white shadow sm:rounded-lg">
     <div class="px-4 py-5 sm:p-6">
@@ -43,6 +87,21 @@
   </div>
 </div>
 
+<script>
+  // Simple script to highlight selected radio button visually
+  document.querySelectorAll('input[name="team[color_scheme_id]"]').forEach(radio => {
+    radio.addEventListener('change', (e) => {
+      // Remove border from all
+      document.querySelectorAll('input[name="team[color_scheme_id]"]').forEach(r => {
+        const borderSpan = r.parentElement.querySelector('span[aria-hidden="true"]');
+        borderSpan.classList.remove('border-indigo-500');
+        borderSpan.classList.add('border-transparent');
+      });
 
-
-
+      // Add border to selected
+      const borderSpan = e.target.parentElement.querySelector('span[aria-hidden="true"]');
+      borderSpan.classList.remove('border-transparent');
+      borderSpan.classList.add('border-indigo-500');
+    });
+  });
+</script>

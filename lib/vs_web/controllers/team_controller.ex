@@ -44,6 +44,7 @@ defmodule VsWeb.TeamController do
     # scoring_categories = Leagues.list_scoring_categories_for_league(league_id)
 
     render(conn, :show,
+      page_title: "#{league.name} - #{team.name}",
       league: league,
       team: team,
       all_teams: all_teams,
@@ -68,20 +69,47 @@ defmodule VsWeb.TeamController do
         nil
       end
 
+    color_schemes = Vs.Team.ColorSchemes.all()
+
     render(conn, :edit,
       league: league,
       team: team,
       current_period: current_period,
-      roster: roster
+      roster: roster,
+      color_schemes: color_schemes
     )
   end
 
-  def update(conn, %{"league_id" => league_id, "id" => team_id} = _params) do
-    # TODO: Implement roster update logic
-    # This will handle adding/removing players from the roster
+  def update(conn, %{"league_id" => league_id, "id" => team_id, "team" => team_params}) do
+    team = Teams.get_team!(team_id)
 
-    conn
-    |> put_flash(:info, "Roster updated successfully!")
-    |> redirect(to: ~p"/leagues/#{league_id}/teams/#{team_id}")
+    case Teams.update_team(team, team_params) do
+      {:ok, _team} ->
+        conn
+        |> put_flash(:info, "Team updated successfully!")
+        |> redirect(to: ~p"/leagues/#{league_id}/teams/#{team_id}")
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        league = Leagues.get_league!(league_id)
+        current_period = Teams.current_period_for_league(league_id)
+
+        roster =
+          if current_period do
+            Teams.get_roster_for_team(team_id, current_period.id)
+          else
+            nil
+          end
+
+        color_schemes = Vs.Team.ColorSchemes.all()
+
+        render(conn, :edit,
+          league: league,
+          team: team,
+          current_period: current_period,
+          roster: roster,
+          color_schemes: color_schemes,
+          changeset: changeset
+        )
+    end
   end
 end

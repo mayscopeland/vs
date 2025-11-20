@@ -1,18 +1,34 @@
 <div>
   <!-- Team Header -->
-  <div class="mb-8">
+  <div class="mb-8 bg-white shadow rounded-lg p-6">
     <div class="flex items-center justify-between">
       <div class="flex items-center">
-        <div class="flex-shrink-0 h-16 w-16 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-          <span class="text-2xl font-bold text-white">
+        <%
+          scheme = if @team.color_scheme_id, do: Vs.Team.ColorSchemes.get(@team.color_scheme_id), else: Vs.Team.ColorSchemes.default()
+          scheme = scheme || Vs.Team.ColorSchemes.default()
+        %>
+        <div
+          class="flex-shrink-0 size-16 rounded-full flex items-center justify-center border-4"
+          style={"background-color: #{scheme.primary}; border-color: #{scheme.accent}"}
+        >
+          <span class="text-5xl font-logo" style={"color: #{scheme.text}"}>
             <%= String.first(@team.name) %>
           </span>
         </div>
         <div class="ml-4">
-          <h1 class="text-3xl font-bold text-gray-900"><%= @team.name %></h1>
-          <p class="mt-1 text-sm text-gray-600">
-            <%= @league.name %> · <%= @league.season_year %>
-          </p>
+          <select
+            onchange="window.location.href=this.value"
+            class="text-4xl font-bold text-gray-900 border-none focus:ring-0 cursor-pointer bg-transparent py-0 pl-0 pr-10"
+          >
+            <%= for t <- @all_teams do %>
+              <option class="text-base font-normal" value={~p"/leagues/#{@league.id}/teams/#{t.id}"} selected={t.id == @team.id}>
+                <%= t.name %>
+              </option>
+            <% end %>
+          </select>
+          <div class="text-sm text-gray-500 mt-1">
+            <%= if @team.managers != [], do: "Manager: " <> Enum.map(@team.managers, & &1.user.display_name) |> Enum.join(", "), else: "No Manager" %>
+          </div>
         </div>
       </div>
       <div>
@@ -35,10 +51,7 @@
   <!-- Roster Display -->
   <div class="space-y-6">
     <%= for group <- @position_groups do %>
-      <div class="bg-white shadow overflow-hidden sm:rounded-lg">
-        <div class="px-4 py-3 bg-gray-50 border-b border-gray-200">
-          <h3 class="text-sm font-medium text-gray-900"><%= group.group || "Positions" %></h3>
-        </div>
+      <div class="p-6 bg-white shadow overflow-hidden sm:rounded-lg">
         <div class="overflow-x-auto">
           <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
@@ -55,12 +68,6 @@
                 >
                   Player
                 </th>
-                <th
-                  scope="col"
-                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  Team
-                </th>
               </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
@@ -73,21 +80,9 @@
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
                       <%= if slot.scorer do %>
-                        <div class="text-sm font-medium text-gray-900">
-                          <%= slot.scorer.name %>
-                        </div>
-                        <div class="text-sm text-gray-500">
-                          <%= slot.scorer.position %>
-                        </div>
+                        <.player_info name={slot.scorer.name} team={slot.scorer.team} position={slot.scorer.position} />
                       <% else %>
                         <span class="text-sm text-gray-400 italic">Empty</span>
-                      <% end %>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      <%= if slot.scorer do %>
-                        <%= slot.scorer.team %>
-                      <% else %>
-                        -
                       <% end %>
                     </td>
                   </tr>
@@ -99,24 +94,4 @@
       </div>
     <% end %>
   </div>
-
-  <!-- Team Navigation -->
-  <%= if @all_teams && length(@all_teams) > 1 do %>
-    <div class="mt-8">
-      <h3 class="text-sm font-medium text-gray-700 mb-3">Other Teams</h3>
-      <div class="flex flex-wrap gap-2">
-        <%= for other_team <- @all_teams do %>
-          <%= if other_team.id != @team.id do %>
-            <a
-              href={~p"/leagues/#{@league.id}/teams/#{other_team.id}"}
-              class="btn-secondary inline-flex items-center px-3 py-1"
-            >
-              <%= other_team.name %>
-            </a>
-          <% end %>
-        <% end %>
-      </div>
-    </div>
-  <% end %>
 </div>
-

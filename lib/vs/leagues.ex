@@ -1,15 +1,10 @@
 defmodule Vs.Leagues do
-  @moduledoc """
-  The Leagues context - handles league and universe management.
-  """
+
 
   import Ecto.Query, warn: false
   alias Vs.Repo
   alias Vs.{League, Universe, Period, RosterPosition, ScoringCategory}
 
-  @doc """
-  Returns the list of all leagues ordered by season year (desc) and name.
-  """
   def list_leagues do
     League
     |> order_by([l], desc: l.season_year, asc: l.name)
@@ -17,56 +12,24 @@ defmodule Vs.Leagues do
     |> Repo.preload(:universe)
   end
 
-  @doc """
-  Gets a single league by ID with universe preloaded.
-
-  Raises `Ecto.NoResultsError` if the League does not exist.
-  """
   def get_league!(id) do
     League
     |> Repo.get!(id)
     |> Repo.preload(:universe)
   end
 
-  @doc """
-  Creates a universe.
-
-  ## Examples
-
-      iex> create_universe(%{contest_type: "NBA"})
-      {:ok, %Universe{}}
-
-      iex> create_universe(%{contest_type: nil})
-      {:error, %Ecto.Changeset{}}
-  """
   def create_universe(attrs \\ %{}) do
     %Universe{}
     |> Universe.changeset(attrs)
     |> Repo.insert()
   end
 
-  @doc """
-  Creates a league.
-
-  ## Examples
-
-      iex> create_league(%{name: "My League", season_year: 2024, universe_id: 1})
-      {:ok, %League{}}
-
-      iex> create_league(%{name: nil})
-      {:error, %Ecto.Changeset{}}
-  """
   def create_league(attrs \\ %{}) do
     %League{}
     |> League.changeset(attrs)
     |> Repo.insert()
   end
 
-  @doc """
-  Sets up league defaults from plugin configuration.
-
-  Creates periods, roster positions, and scoring categories based on the plugin config.
-  """
   def setup_league_defaults(league, plugin_config) do
     Repo.transaction(fn ->
       # Create periods
@@ -77,21 +40,54 @@ defmodule Vs.Leagues do
         |> Repo.insert!()
       end)
 
-      # Create roster positions
-      plugin_config.roster_positions
-      |> Enum.each(fn position_data ->
-        %RosterPosition{}
-        |> RosterPosition.changeset(Map.put(position_data, :league_id, league.id))
-        |> Repo.insert!()
-      end)
+      # Create roster positions from first position preset
+      first_position_preset = List.first(plugin_config.position_presets)
 
-      # Create scoring categories
-      plugin_config.scoring_categories
-      |> Enum.each(fn category_data ->
-        %ScoringCategory{}
-        |> ScoringCategory.changeset(Map.put(category_data, :league_id, league.id))
-        |> Repo.insert!()
-      end)
+      if first_position_preset do
+        first_position_preset.positions
+        |> Enum.with_index(1)
+        |> Enum.each(fn {{position, count}, sequence} ->
+          %RosterPosition{}
+          |> RosterPosition.changeset(%{
+            league_id: league.id,
+            position: position,
+            count: count,
+            sequence: sequence
+          })
+          |> Repo.insert!()
+        end)
+      end
+
+      # Create scoring categories from first category preset
+      first_category_preset = List.first(plugin_config.category_presets)
+
+      if first_category_preset do
+        # Build a map of category name -> available category info for lookup
+        available_categories_map =
+          plugin_config.available_categories
+          |> Enum.map(fn cat -> {cat.name, cat} end)
+          |> Map.new()
+
+        first_category_preset.categories
+        |> Enum.with_index(1)
+        |> Enum.each(fn {{name, multiplier}, sequence} ->
+          # Look up formula and format from available_categories
+          available_cat = Map.get(available_categories_map, name)
+          formula = if available_cat, do: available_cat.formula, else: nil
+          format = if available_cat, do: available_cat.format, else: "integer"
+
+          %ScoringCategory{}
+          |> ScoringCategory.changeset(%{
+            league_id: league.id,
+            name: name,
+            multiplier: multiplier,
+            formula: formula,
+            format: format,
+            sequence: sequence
+          })
+          |> Repo.insert!()
+        end)
+      end
 
       league
     end)

@@ -1,0 +1,614 @@
+{
+  "contest_type": "NBA",
+  "season": {
+    "year": 2025,
+    "start_date": "2025-10-15",
+    "end_date": "2026-04-15"
+  },
+  "periods": [
+    {
+      "name": "Week 1",
+      "sequence": 1,
+      "start_date": "2025-10-15",
+      "end_date": "2025-10-21",
+      "is_playoff": false
+    },
+    {
+      "name": "Week 2",
+      "sequence": 2,
+      "start_date": "2025-10-22",
+      "end_date": "2025-10-28",
+      "is_playoff": false
+    },
+    {
+      "name": "Week 3",
+      "sequence": 3,
+      "start_date": "2025-10-29",
+      "end_date": "2025-11-04",
+      "is_playoff": false
+    },
+    {
+      "name": "Week 4",
+      "sequence": 4,
+      "start_date": "2025-11-05",
+      "end_date": "2025-11-11",
+      "is_playoff": false
+    },
+    {
+      "name": "Week 5",
+      "sequence": 5,
+      "start_date": "2025-11-12",
+      "end_date": "2025-11-18",
+      "is_playoff": false
+    },
+    {
+      "name": "Week 6",
+      "sequence": 6,
+      "start_date": "2025-11-19",
+      "end_date": "2025-11-25",
+      "is_playoff": false
+    },
+    {
+      "name": "Week 7",
+      "sequence": 7,
+      "start_date": "2025-11-26",
+      "end_date": "2025-12-02",
+      "is_playoff": false
+    },
+    {
+      "name": "Week 8",
+      "sequence": 8,
+      "start_date": "2025-12-03",
+      "end_date": "2025-12-09",
+      "is_playoff": false
+    },
+    {
+      "name": "Week 9",
+      "sequence": 9,
+      "start_date": "2025-12-10",
+      "end_date": "2025-12-16",
+      "is_playoff": false
+    },
+    {
+      "name": "Week 10",
+      "sequence": 10,
+      "start_date": "2025-12-17",
+      "end_date": "2025-12-23",
+      "is_playoff": false
+    },
+    {
+      "name": "Week 11",
+      "sequence": 11,
+      "start_date": "2025-12-24",
+      "end_date": "2025-12-30",
+      "is_playoff": false
+    },
+    {
+      "name": "Week 12",
+      "sequence": 12,
+      "start_date": "2025-12-31",
+      "end_date": "2026-01-06",
+      "is_playoff": false
+    },
+    {
+      "name": "Week 13",
+      "sequence": 13,
+      "start_date": "2026-01-07",
+      "end_date": "2026-01-13",
+      "is_playoff": false
+    },
+    {
+      "name": "Week 14",
+      "sequence": 14,
+      "start_date": "2026-01-14",
+      "end_date": "2026-01-20",
+      "is_playoff": false
+    },
+    {
+      "name": "Week 15",
+      "sequence": 15,
+      "start_date": "2026-01-21",
+      "end_date": "2026-01-27",
+      "is_playoff": false
+    },
+    {
+      "name": "Week 16",
+      "sequence": 16,
+      "start_date": "2026-01-28",
+      "end_date": "2026-02-03",
+      "is_playoff": false
+    },
+    {
+      "name": "Week 17",
+      "sequence": 17,
+      "start_date": "2026-02-04",
+      "end_date": "2026-02-10",
+      "is_playoff": false
+    },
+    {
+      "name": "Week 18",
+      "sequence": 18,
+      "start_date": "2026-02-11",
+      "end_date": "2026-02-17",
+      "is_playoff": false
+    },
+    {
+      "name": "Week 19",
+      "sequence": 19,
+      "start_date": "2026-02-18",
+      "end_date": "2026-02-24",
+      "is_playoff": false
+    },
+    {
+      "name": "Week 20",
+      "sequence": 20,
+      "start_date": "2026-02-25",
+      "end_date": "2026-03-03",
+      "is_playoff": false
+    },
+    {
+      "name": "Week 21",
+      "sequence": 21,
+      "start_date": "2026-03-04",
+      "end_date": "2026-03-10",
+      "is_playoff": false
+    },
+    {
+      "name": "Week 22",
+      "sequence": 22,
+      "start_date": "2026-03-11",
+      "end_date": "2026-03-17",
+      "is_playoff": false
+    },
+    {
+      "name": "Week 23",
+      "sequence": 23,
+      "start_date": "2026-03-18",
+      "end_date": "2026-03-24",
+      "is_playoff": false
+    },
+    {
+      "name": "Week 24",
+      "sequence": 24,
+      "start_date": "2026-03-25",
+      "end_date": "2026-03-31",
+      "is_playoff": false
+    },
+    {
+      "name": "Week 25",
+      "sequence": 25,
+      "start_date": "2026-04-01",
+      "end_date": "2026-04-07",
+      "is_playoff": false
+    },
+    {
+      "name": "Week 26",
+      "sequence": 26,
+      "start_date": "2026-04-08",
+      "end_date": "2026-04-15",
+      "is_playoff": false
+    }
+  ],
+  "available_categories": [
+    {
+      "name": "PTS",
+      "description": "Total points scored"
+    },
+    {
+      "name": "FGM",
+      "description": "Total field goals made"
+    },
+    {
+      "name": "FGA",
+      "description": "Total field goals attempted"
+    },
+    {
+      "name": "FG%",
+      "description": "Field goal shooting percentage",
+      "formula": "FGM / FGA",
+      "format": "percentage_1"
+    },
+    {
+      "name": "FTM",
+      "description": "Total free throws made"
+    },
+    {
+      "name": "FTA",
+      "description": "Total free throws attempted"
+    },
+    {
+      "name": "FT%",
+      "description": "Free throw shooting percentage",
+      "formula": "FTM / FTA",
+      "format": "percentage_1"
+    },
+    {
+      "name": "3PM",
+      "description": "Total three-point shots made"
+    },
+    {
+      "name": "3PA",
+      "description": "Total three-point shots attempted"
+    },
+    {
+      "name": "3P%",
+      "description": "Three-point shooting percentage",
+      "formula": "3PM / 3PA",
+      "format": "percentage_1"
+    },
+    {
+      "name": "OREB",
+      "description": "Total offensive rebounds"
+    },
+    {
+      "name": "DREB",
+      "description": "Total defensive rebounds"
+    },
+    {
+      "name": "REB",
+      "description": "Total rebounds",
+      "formula": "OREB + DREB"
+    },
+    {
+      "name": "AST",
+      "description": "Total assists"
+    },
+    {
+      "name": "STL",
+      "description": "Total steals"
+    },
+    {
+      "name": "BLK",
+      "description": "Total blocks"
+    },
+    {
+      "name": "TO",
+      "description": "Total turnovers"
+    },
+    {
+      "name": "TO/AST",
+      "description": "Ratio of turnovers to assists",
+      "formula": "TO / AST",
+      "format": "decimal_2"
+    },
+    {
+      "name": "DD",
+      "description": "Games with double digits in two stat categories"
+    },
+    {
+      "name": "TD",
+      "description": "Games with double digits in three stat categories"
+    }
+  ],
+  "category_presets": [
+    {
+      "name": "9-Cat",
+      "type": "roto",
+      "description": "Standard 9-category scoring",
+      "categories": {
+        "PTS": 1,
+        "REB": 1,
+        "AST": 1,
+        "STL": 1,
+        "BLK": 1,
+        "TO": -1,
+        "FG%": 1,
+        "FT%": 1,
+        "3PM": 1
+      }
+    },
+    {
+      "name": "8-Cat",
+      "type": "roto",
+      "description": "8-category scoring (no turnovers)",
+      "categories": {
+        "PTS": 1,
+        "REB": 1,
+        "AST": 1,
+        "STL": 1,
+        "BLK": 1,
+        "FG%": 1,
+        "FT%": 1,
+        "3PM": 1
+      }
+    },
+    {
+      "name": "Yahoo",
+      "type": "points",
+      "description": "Yahoo standard points scoring",
+      "categories": {
+        "PTS": 1,
+        "REB": 1.2,
+        "AST": 1.5,
+        "STL": 3,
+        "BLK": 3,
+        "TO": -1
+      }
+    },
+    {
+      "name": "Yahoo High Score",
+      "type": "points",
+      "description": "Yahoo high score points scoring (no turnovers)",
+      "categories": {
+        "PTS": 1,
+        "REB": 1,
+        "AST": 2,
+        "STL": 3,
+        "BLK": 3
+      }
+    },
+    {
+      "name": "Sleeper",
+      "type": "points",
+      "description": "Sleeper standard points scoring",
+      "categories": {
+        "PTS": 0.5,
+        "REB": 1,
+        "AST": 1,
+        "STL": 2,
+        "BLK": 2,
+        "TO": -1,
+        "3PM": 0.5,
+        "DD": 1,
+        "TD": 2
+      }
+    },
+    {
+      "name": "ESPN",
+      "type": "points",
+      "description": "ESPN standard points scoring",
+      "categories": {
+        "PTS": 1,
+        "REB": 1,
+        "AST": 2,
+        "STL": 4,
+        "BLK": 4,
+        "TO": -2,
+        "FGA": -1,
+        "FGM": 2,
+        "FTA": -1,
+        "FTM": 1,
+        "3PM": 1
+      }
+    },
+    {
+      "name": "Fantrax",
+      "type": "points",
+      "description": "Fantrax standard points scoring",
+      "categories": {
+        "PTS": 1,
+        "REB": 1.25,
+        "AST": 1.5,
+        "STL": 2,
+        "BLK": 2,
+        "TO": -1
+      }
+    },
+    {
+      "name": "CBS",
+      "type": "points",
+      "description": "CBS Sports standard points scoring",
+      "categories": {
+        "PTS": 1,
+        "REB": 1,
+        "AST": 1,
+        "STL": 2,
+        "BLK": 1,
+        "TO": -1
+      }
+    },
+    {
+      "name": "NFBKC Best Ball",
+      "type": "points",
+      "description": "National Fantasy Basketball Championship best ball scoring",
+      "categories": {
+        "PTS": 1,
+        "REB": 1,
+        "AST": 1,
+        "STL": 1,
+        "BLK": 1,
+        "FTM": 1,
+        "3PM": 1
+      }
+    },
+    {
+      "name": "Ottoneu Simple",
+      "type": "points",
+      "description": "Ottoneu simple points scoring",
+      "categories": {
+        "PTS": 1,
+        "REB": 1,
+        "AST": 1,
+        "STL": 1,
+        "BLK": 1,
+        "TO": -1
+      }
+    },
+    {
+      "name": "Ottoneu Traditional",
+      "type": "points",
+      "description": "Ottoneu traditional points scoring",
+      "categories": {
+        "PTS": 1,
+        "REB": 1,
+        "AST": 2,
+        "STL": 4,
+        "BLK": 4,
+        "TO": -2,
+        "FGA": -1,
+        "FGM": 2,
+        "FTA": -1,
+        "FTM": 1
+      }
+    },
+    {
+      "name": "Underdog",
+      "type": "points",
+      "description": "Underdog Fantasy standard points scoring",
+      "categories": {
+        "PTS": 1,
+        "REB": 1.2,
+        "AST": 1.5,
+        "STL": 3,
+        "BLK": 3,
+        "TO": -1
+      }
+    }
+  ],
+  "available_positions": [
+    {
+      "name": "PG",
+      "display_name": "Point Guard"
+    },
+    {
+      "name": "SG",
+      "display_name": "Shooting Guard"
+    },
+    {
+      "name": "SF",
+      "display_name": "Small Forward"
+    },
+    {
+      "name": "PF",
+      "display_name": "Power Forward"
+    },
+    {
+      "name": "C",
+      "display_name": "Center"
+    },
+    {
+      "name": "G",
+      "display_name": "Guard"
+    },
+    {
+      "name": "F",
+      "display_name": "Forward"
+    },
+    {
+      "name": "PF/C",
+      "display_name": "Power Forward/Center"
+    },
+    {
+      "name": "F/C",
+      "display_name": "Forward/Center"
+    },
+    {
+      "name": "G/F",
+      "display_name": "Guard/Forward"
+    },
+    {
+      "name": "UT",
+      "display_name": "Utility"
+    },
+    {
+      "name": "BN",
+      "display_name": "Bench"
+    }
+  ],
+  "position_presets": [
+    {
+      "name": "Yahoo",
+      "positions": {
+        "PG": 1,
+        "SG": 1,
+        "SF": 1,
+        "PF": 1,
+        "C": 2,
+        "G": 1,
+        "F": 1,
+        "UT": 2,
+        "BN": 3
+      }
+    },
+    {
+      "name": "Yahoo High Score",
+      "positions": {
+        "G": 2,
+        "F/C": 3,
+        "UT": 1,
+        "BN": 4
+      }
+    },
+    {
+      "name": "Sleeper",
+      "positions": {
+        "PG": 1,
+        "SG": 1,
+        "SF": 1,
+        "PF": 1,
+        "C": 1,
+        "G": 1,
+        "F": 1,
+        "UT": 2,
+        "BN": 5
+      }
+    },
+    {
+      "name": "ESPN",
+      "positions": {
+        "PG": 1,
+        "SG": 1,
+        "SF": 1,
+        "PF": 1,
+        "C": 1,
+        "G": 1,
+        "F": 1,
+        "UT": 3,
+        "BN": 3
+      }
+    },
+    {
+      "name": "CBS",
+      "positions": {
+        "G": 4,
+        "F": 4,
+        "C": 1,
+        "UT": 1,
+        "BN": 3
+      }
+    },
+    {
+      "name": "Fantrax",
+      "positions": {
+        "G": 4,
+        "F": 4,
+        "C": 1,
+        "UT": 1,
+        "BN": 4
+      }
+    },
+    {
+      "name": "Ottoneu",
+      "positions": {
+        "G": 3,
+        "F": 2,
+        "C": 1,
+        "G/F": 1,
+        "F/C": 1,
+        "UT": 2,
+        "BN": 3
+      }
+    },
+    {
+      "name": "Underdog",
+      "positions": {
+        "G": 2,
+        "F": 2,
+        "C": 1,
+        "UT": 1,
+        "BN": 10
+      }
+    },
+    {
+      "name": "NFBKC",
+      "positions": {
+        "G": 4,
+        "F": 4,
+        "C": 2,
+        "UT": 2,
+        "BN": 4
+      }
+    }
+  ]
+}
+

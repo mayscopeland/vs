@@ -47,6 +47,23 @@ defmodule Vs.Teams do
   end
 
   @doc """
+  Updates a team.
+
+  ## Examples
+
+      iex> update_team(team, %{field: new_value})
+      {:ok, %Team{}}
+
+      iex> update_team(team, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+  """
+  def update_team(%Team{} = team, attrs) do
+    team
+    |> Team.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
   Determines the current active period for a league based on today's date.
 
   Returns the period that contains today's date, or the most recent period if none contains today.

@@ -59,7 +59,6 @@ defmodule Vs.MixProject do
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.2"},
       {:bandit, "~> 1.5"},
-      {:toml, "~> 0.7"},
       {:httpoison, "~> 2.2"}
     ]
   end
