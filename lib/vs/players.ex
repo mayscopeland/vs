@@ -5,7 +5,7 @@ defmodule Vs.Players do
 
   import Ecto.Query, warn: false
   alias Vs.Repo
-  alias Vs.{Scorer, League, Observation}
+  alias Vs.{Scorer, League}
 
   @doc """
   Returns all scorers/players that are not rostered in a specific league.
@@ -17,7 +17,6 @@ defmodule Vs.Players do
     league = Repo.get!(League, league_id) |> Repo.preload(:universe)
     page = Keyword.get(opts, :page, 1)
     per_page = Keyword.get(opts, :per_page, 50)
-    offset = (page - 1) * per_page
 
     # Get all scorer IDs that are rostered in this league
     rostered_scorer_ids =
@@ -36,18 +35,70 @@ defmodule Vs.Players do
       |> where([s], s.universe_id == ^league.universe.id)
       |> where([s], s.id not in ^rostered_scorer_ids)
 
-    # Get total count
-    total_count = Repo.aggregate(query, :count, :id)
+    # Fetch ALL matching scorers
+    all_players = Repo.all(query)
 
-    # Get paginated results
-    players =
-      query
-      |> order_by([s], asc: s.name)
-      |> limit(^per_page)
-      |> offset(^offset)
-      |> Repo.all()
+    # Get active scoring categories for formulas
+    scoring_categories = Vs.Leagues.get_active_scoring_categories(league)
+    stat_source = Keyword.get(opts, :stat_source)
 
-    {players, total_count}
+    # Process players: extract stats, calculate derived stats, and populate struct
+    processed_players =
+      Enum.map(all_players, fn player ->
+        # Get raw stats for the source
+        raw_stats = Map.get(player.stats, to_string(stat_source), %{})
+
+        # Calculate derived stats
+        calculated_stats =
+          scoring_categories
+          |> Enum.reduce(raw_stats, fn category, acc ->
+            if category.formula do
+              val = Vs.Stats.Calculator.calculate(category.formula, raw_stats)
+              Map.put(acc, category.name, val)
+            else
+              acc
+            end
+          end)
+
+        # Update player struct with the calculated stats for this view
+        %{player | stats: calculated_stats}
+      end)
+
+    # Sort options
+    sort_by = Keyword.get(opts, :sort_by, "name")
+    sort_dir = Keyword.get(opts, :sort_dir, "asc")
+
+    # Sort in memory
+    sorted_players =
+      if sort_by == "name" do
+        if sort_dir == "desc" do
+          Enum.sort_by(processed_players, & &1.name, :desc)
+        else
+          Enum.sort_by(processed_players, & &1.name, :asc)
+        end
+      else
+        # Sort by stat category
+        sorter = fn p ->
+          case Map.get(p.stats, sort_by) do
+            # Treat nil as very low value
+            nil -> -999_999.0
+            val -> val
+          end
+        end
+
+        if sort_dir == "asc" do
+          Enum.sort_by(processed_players, sorter, :asc)
+        else
+          Enum.sort_by(processed_players, sorter, :desc)
+        end
+      end
+
+    # Paginate
+    total_count = length(sorted_players)
+    offset = (page - 1) * per_page
+    paginated_players = Enum.slice(sorted_players, offset, per_page)
+
+    {paginated_players, total_count}
   end
 
   @doc """
@@ -76,31 +127,22 @@ defmodule Vs.Players do
   end
 
   @doc """
-  Gets aggregated stats for a list of players for a specific season.
+  Gets aggregated stats for a list of players for a specific stat source.
 
+  The source can be a year string (e.g. "2025", "2024") or "projection".
   Returns a map of %{scorer_id => %{"PTS" => 123, "FGM" => 45, ...}}
   """
-  def get_player_stats(player_ids, season_year) when is_list(player_ids) do
-    # Query all observations for these players in this season
-    observations =
-      Observation
-      |> where([o], o.scorer_id in ^player_ids)
-      |> where([o], o.season_year == ^season_year)
-      |> select([o], %{scorer_id: o.scorer_id, stats: o.stats})
-      |> Repo.all()
-
-    # Group by scorer_id and aggregate stats
-    observations
-    |> Enum.group_by(& &1.scorer_id)
-    |> Enum.map(fn {scorer_id, obs_list} ->
-      aggregated_stats =
-        obs_list
-        |> Enum.map(& &1.stats)
-        |> Enum.reduce(%{}, fn stats, acc ->
-          Map.merge(acc, stats, fn _k, v1, v2 -> v1 + v2 end)
-        end)
-
-      {scorer_id, aggregated_stats}
+  def get_player_stats(player_ids, stat_source) when is_list(player_ids) do
+    # Query scorers and extract the requested stat source from their stats map
+    from(s in Scorer,
+      where: s.id in ^player_ids,
+      select: {s.id, s.stats}
+    )
+    |> Repo.all()
+    |> Enum.map(fn {id, stats} ->
+      # Get the stats for the requested source, defaulting to empty map if not found
+      source_stats = Map.get(stats, to_string(stat_source), %{})
+      {id, source_stats}
     end)
     |> Map.new()
   end

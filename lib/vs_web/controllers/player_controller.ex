@@ -13,46 +13,59 @@ defmodule VsWeb.PlayerController do
 
     page = Map.get(params, "page", "1") |> String.to_integer()
     per_page = 50
+    stat_source = Map.get(params, "stat_source", to_string(league.season_year))
+    sort_by = Map.get(params, "sort_by", "name")
+    sort_dir = Map.get(params, "sort_dir", "asc")
 
     {players, total_count} =
-      Players.list_available_players(league_id, page: page, per_page: per_page)
+      Players.list_available_players(league_id,
+        page: page,
+        per_page: per_page,
+        sort_by: sort_by,
+        sort_dir: sort_dir,
+        stat_source: stat_source
+      )
 
     total_pages = ceil(total_count / per_page)
 
-    # Get aggregated stats for all players
-    player_ids = Enum.map(players, & &1.id)
-    player_stats = Players.get_player_stats(player_ids, league.season_year)
+    # Players now come with stats pre-calculated and populated in the struct
+    # We just need to format them for display if needed, but the view expects raw values or formatted?
+    # The view calls Formatter.format inside the loop? No, the controller did it.
+    # Let's check the view again.
+    # The view does: <%= get_in(@player_stats, [player.id, category.name]) || "-" %>
+    # But wait, the controller was creating a map of {scorer_id => formatted_stats}.
+    # Now `players` is a list of structs where `player.stats` is the map of calculated values.
+    # So we need to adapt the view or the controller to match.
+    # It's cleaner to format here and pass a map like before to minimize view changes,
+    # OR update the view to use `player.stats`.
+    # Let's update the controller to produce the expected `@player_stats` map for compatibility.
 
-    # Calculate formula-based categories and format all values
     enhanced_stats =
-      player_stats
-      |> Enum.map(fn {scorer_id, stats} ->
-        # Calculate formula-based categories
-        calculated_stats =
-          scoring_categories
-          |> Enum.reduce(stats, fn category, acc ->
-            if category.formula do
-              # Calculate the formula value
-              calculated_value = Calculator.calculate(category.formula, stats)
-              Map.put(acc, category.name, calculated_value)
-            else
-              acc
-            end
-          end)
-
-        # Format all values according to their format specification
+      players
+      |> Enum.map(fn player ->
         formatted_stats =
           scoring_categories
           |> Enum.map(fn category ->
-            raw_value = Map.get(calculated_stats, category.name)
+            raw_value = Map.get(player.stats, category.name)
             formatted_value = Formatter.format(raw_value, category.format)
             {category.name, formatted_value}
           end)
           |> Map.new()
 
-        {scorer_id, formatted_stats}
+        {player.id, formatted_stats}
       end)
       |> Map.new()
+
+    # Generate options for the dropdown
+    current_year = league.season_year
+
+    stat_source_options = [
+      {"#{current_year} Stats", to_string(current_year)},
+      {"#{current_year} Preseason Projections", "projection"},
+      {"#{current_year - 1} Stats", to_string(current_year - 1)},
+      {"#{current_year - 2} Stats", to_string(current_year - 2)},
+      {"#{current_year - 3} Stats", to_string(current_year - 3)}
+    ]
 
     render(conn, :list,
       league: league,
@@ -61,7 +74,11 @@ defmodule VsWeb.PlayerController do
       player_stats: enhanced_stats,
       page_title: "#{league.name} - Players",
       page: page,
-      total_pages: total_pages
+      total_pages: total_pages,
+      stat_source: stat_source,
+      stat_source_options: stat_source_options,
+      sort_by: sort_by,
+      sort_dir: sort_dir
     )
   end
 end

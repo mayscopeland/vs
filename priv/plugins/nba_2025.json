@@ -262,21 +262,21 @@
       "description": "Total blocks"
     },
     {
-      "name": "TO",
+      "name": "TOV",
       "description": "Total turnovers"
     },
     {
       "name": "TO/AST",
       "description": "Ratio of turnovers to assists",
-      "formula": "TO / AST",
+      "formula": "TOV / AST",
       "format": "decimal_2"
     },
     {
-      "name": "DD",
+      "name": "DD2",
       "description": "Games with double digits in two stat categories"
     },
     {
-      "name": "TD",
+      "name": "TD3",
       "description": "Games with double digits in three stat categories"
     }
   ],
@@ -291,7 +291,7 @@
         "AST": 1,
         "STL": 1,
         "BLK": 1,
-        "TO": -1,
+        "TOV": -1,
         "FG%": 1,
         "FT%": 1,
         "3PM": 1
@@ -322,7 +322,7 @@
         "AST": 1.5,
         "STL": 3,
         "BLK": 3,
-        "TO": -1
+        "TOV": -1
       }
     },
     {
@@ -347,10 +347,10 @@
         "AST": 1,
         "STL": 2,
         "BLK": 2,
-        "TO": -1,
+        "TOV": -1,
         "3PM": 0.5,
-        "DD": 1,
-        "TD": 2
+        "DD2": 1,
+        "TD3": 2
       }
     },
     {
@@ -363,7 +363,7 @@
         "AST": 2,
         "STL": 4,
         "BLK": 4,
-        "TO": -2,
+        "TOV": -2,
         "FGA": -1,
         "FGM": 2,
         "FTA": -1,
@@ -381,7 +381,7 @@
         "AST": 1.5,
         "STL": 2,
         "BLK": 2,
-        "TO": -1
+        "TOV": -1
       }
     },
     {
@@ -394,7 +394,7 @@
         "AST": 1,
         "STL": 2,
         "BLK": 1,
-        "TO": -1
+        "TOV": -1
       }
     },
     {
@@ -421,7 +421,7 @@
         "AST": 1,
         "STL": 1,
         "BLK": 1,
-        "TO": -1
+        "TOV": -1
       }
     },
     {
@@ -434,7 +434,7 @@
         "AST": 2,
         "STL": 4,
         "BLK": 4,
-        "TO": -2,
+        "TOV": -2,
         "FGA": -1,
         "FGM": 2,
         "FTA": -1,
@@ -451,7 +451,7 @@
         "AST": 1.5,
         "STL": 3,
         "BLK": 3,
-        "TO": -1
+        "TOV": -1
       }
     }
   ],

@@ -219,7 +219,8 @@ defmodule Vs.Plugins.Registry do
         name: player["name"],
         team: player["team"],
         position: player["position"],
-        external_id: player["external_id"]
+        external_id: player["external_id"],
+        stats: player["stats"] || %{}
       }
     end)
   end

@@ -101,7 +101,7 @@ defmodule Vs.Plugins do
         |> Enum.reject(&is_nil/1)
 
       # Upsert observations
-      {count, _} =
+      {_count, _} =
         Repo.insert_all(
           Vs.Observation,
           observations,
@@ -109,8 +109,56 @@ defmodule Vs.Plugins do
           conflict_target: [:scorer_id, :game_date]
         )
 
-      {:ok, count}
+      # Update Scorer stats with YTD totals
+      update_scorer_ytd_stats(observations, season_year)
+
+      {:ok, length(observations)}
     end
+  end
+
+  defp update_scorer_ytd_stats(observations, season_year) do
+    scorer_ids = Enum.map(observations, & &1.scorer_id) |> Enum.uniq()
+
+    # Fetch all observations for these scorers for the current season
+    all_observations =
+      from(o in Vs.Observation,
+        where: o.scorer_id in ^scorer_ids and o.season_year == ^season_year,
+        select: {o.scorer_id, o.stats}
+      )
+      |> Repo.all()
+
+    # Group by scorer and aggregate
+    aggregated_stats =
+      all_observations
+      |> Enum.group_by(fn {scorer_id, _stats} -> scorer_id end, fn {_scorer_id, stats} ->
+        stats
+      end)
+      |> Enum.map(fn {scorer_id, stats_list} ->
+        ytd_stats =
+          Enum.reduce(stats_list, %{}, fn stats, acc ->
+            Map.merge(acc, stats, fn _k, v1, v2 ->
+              case {v1, v2} do
+                {n1, n2} when is_number(n1) and is_number(n2) -> n1 + n2
+                # Keep original value for non-numeric fields
+                _ -> v1
+              end
+            end)
+          end)
+
+        {scorer_id, ytd_stats}
+      end)
+
+    # Update each scorer
+    Enum.each(aggregated_stats, fn {scorer_id, ytd_stats} ->
+      scorer = Repo.get(Scorer, scorer_id)
+
+      # Merge new YTD stats into existing stats map under the season year key
+      updated_stats = Map.put(scorer.stats, to_string(season_year), ytd_stats)
+
+      scorer
+      |> Scorer.changeset(%{stats: updated_stats})
+      |> Repo.update!()
+    end)
   end
 
   # Bulk inserts scorers into the database.
@@ -128,31 +176,48 @@ defmodule Vs.Plugins do
         |> Map.put(:updated_at, now)
       end)
 
-    # Check which scorers already exist in this universe
+    # Get existing scorers
     external_ids = Enum.map(scorers, & &1.external_id) |> Enum.reject(&is_nil/1)
 
-    existing_external_ids =
+    existing_scorers =
       from(s in Scorer,
-        where: s.external_id in ^external_ids and s.universe_id == ^universe_id,
-        select: s.external_id
+        where: s.external_id in ^external_ids and s.universe_id == ^universe_id
       )
       |> Repo.all()
-      |> MapSet.new()
+      |> Map.new(&{&1.external_id, &1})
 
-    # Filter out existing scorers
-    new_scorers =
-      Enum.reject(scorers_with_metadata, fn scorer ->
-        scorer.external_id && MapSet.member?(existing_external_ids, scorer.external_id)
+    # Split into new and existing
+    {new_scorers, updates} =
+      Enum.split_with(scorers_with_metadata, fn s ->
+        !Map.has_key?(existing_scorers, s.external_id)
       end)
 
-    case new_scorers do
-      [] ->
-        {:ok, 0}
+    # Insert new scorers
+    inserted_count =
+      if new_scorers != [] do
+        {count, _} = Repo.insert_all(Scorer, new_scorers)
+        count
+      else
+        0
+      end
 
-      scorers ->
-        {count, _} = Repo.insert_all(Scorer, scorers)
-        {:ok, count}
-    end
+    # Update existing scorers
+    updated_count =
+      Enum.reduce(updates, 0, fn new_data, acc ->
+        existing = Map.get(existing_scorers, new_data.external_id)
+
+        if existing.stats != new_data.stats do
+          existing
+          |> Scorer.changeset(%{stats: new_data.stats, updated_at: now})
+          |> Repo.update!()
+
+          acc + 1
+        else
+          acc
+        end
+      end)
+
+    {:ok, inserted_count + updated_count}
   end
 
   defp insert_scorers(_, _, _), do: {:error, :invalid_scorers_data}
