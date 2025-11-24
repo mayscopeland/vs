@@ -26,7 +26,9 @@ defmodule VsWeb.LeagueController do
         # Load players if not already loaded for this universe
         unless Players.players_loaded_for_universe?(universe.id) do
           case Plugins.load_initial_data(contest_type, season_year, universe.id) do
-            {:ok, _count} -> :ok
+            {:ok, _count} ->
+              :ok
+
             {:error, reason} ->
               conn
               |> put_flash(:error, "Failed to load player data: #{inspect(reason)}")
@@ -51,7 +53,14 @@ defmodule VsWeb.LeagueController do
 
         Enum.each(team_names, fn name ->
           scheme = Vs.Team.ColorSchemes.random()
-          Teams.create_team(%{league_id: league.id, name: name, color_scheme_id: scheme.id})
+          font_style = Vs.Team.FontStyles.random()
+
+          Teams.create_team(%{
+            league_id: league.id,
+            name: name,
+            color_scheme_id: scheme.id,
+            font_style: font_style.id
+          })
         end)
 
         # Redirect to league page

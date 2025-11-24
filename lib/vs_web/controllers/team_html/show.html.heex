@@ -1,43 +1,39 @@
 <div>
   <!-- Team Header -->
-  <div class="mb-8 bg-white shadow rounded-lg p-6">
-    <div class="flex items-center justify-between">
-      <div class="flex items-center">
-        <%
-          scheme = if @team.color_scheme_id, do: Vs.Team.ColorSchemes.get(@team.color_scheme_id), else: Vs.Team.ColorSchemes.default()
-          scheme = scheme || Vs.Team.ColorSchemes.default()
-        %>
-        <div
-          class="flex-shrink-0 size-16 rounded-full flex items-center justify-center border-4"
-          style={"background-color: #{scheme.primary}; border-color: #{scheme.accent}"}
-        >
-          <span class="text-5xl font-logo" style={"color: #{scheme.text}"}>
-            <%= String.first(@team.name) %>
-          </span>
-        </div>
-        <div class="ml-4">
-          <select
-            onchange="window.location.href=this.value"
-            class="text-4xl font-bold text-gray-900 border-none focus:ring-0 cursor-pointer bg-transparent py-0 pl-0 pr-10"
-          >
-            <%= for t <- @all_teams do %>
-              <option class="text-base font-normal" value={~p"/leagues/#{@league.id}/teams/#{t.id}"} selected={t.id == @team.id}>
-                <%= t.name %>
-              </option>
-            <% end %>
-          </select>
-          <div class="text-sm text-gray-500 mt-1">
-            <%= if @team.managers != [], do: "Manager: " <> Enum.map(@team.managers, & &1.user.display_name) |> Enum.join(", "), else: "No Manager" %>
-          </div>
-        </div>
-      </div>
-      <div>
-        <a
-          href={~p"/leagues/#{@league.id}/teams/#{@team.id}/edit"}
-          class="btn-secondary inline-flex items-center"
-        >
-          Edit roster
-        </a>
+  <div class="mb-8 bg-white shadow rounded-lg p-6 flex items-center">
+    <%
+      scheme = if @team.color_scheme_id, do: Vs.Team.ColorSchemes.get(@team.color_scheme_id), else: Vs.Team.ColorSchemes.default()
+      scheme = scheme || Vs.Team.ColorSchemes.default()
+    %>
+    <div
+      class="flex-shrink-0 size-16 rounded-full flex items-center justify-center border-4"
+      style={"background-color: #{scheme.primary}; border-color: #{scheme.accent}"}
+    >
+      <%
+        font_style = @team.font_style || "olde"
+        letter = String.first(@team.name) |> String.upcase()
+        svg_path = "/images/#{font_style}/#{letter}.svg"
+      %>
+      <div
+        role="img"
+        aria-label={letter}
+        class="size-10"
+        style={"background-color: #{scheme.text}; -webkit-mask-image: url(#{svg_path}); mask-image: url(#{svg_path}); -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-position: center; mask-position: center; -webkit-mask-size: contain; mask-size: contain;"}
+      ></div>
+    </div>
+    <div class="ml-4">
+      <select
+        onchange="window.location.href=this.value"
+        class="text-4xl font-bold text-gray-900 border-none focus:ring-0 cursor-pointer bg-transparent py-0 pl-0 pr-10"
+      >
+        <%= for t <- @all_teams do %>
+          <option class="text-base font-normal" value={~p"/leagues/#{@league.id}/teams/#{t.id}"} selected={t.id == @team.id}>
+            <%= t.name %>
+          </option>
+        <% end %>
+      </select>
+      <div class="text-sm text-gray-500 mt-1">
+        <%= if @team.managers != [], do: "Manager: " <> Enum.map(@team.managers, & &1.user.display_name) |> Enum.join(", "), else: "No Manager" %>
       </div>
     </div>
   </div>

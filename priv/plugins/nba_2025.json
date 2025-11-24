@@ -458,51 +458,63 @@
   "available_positions": [
     {
       "name": "PG",
-      "display_name": "Point Guard"
+      "display_name": "Point Guard",
+      "group": "Roster"
     },
     {
       "name": "SG",
-      "display_name": "Shooting Guard"
+      "display_name": "Shooting Guard",
+      "group": "Roster"
     },
     {
       "name": "SF",
-      "display_name": "Small Forward"
+      "display_name": "Small Forward",
+      "group": "Roster"
     },
     {
       "name": "PF",
-      "display_name": "Power Forward"
+      "display_name": "Power Forward",
+      "group": "Roster"
     },
     {
       "name": "C",
-      "display_name": "Center"
+      "display_name": "Center",
+      "group": "Roster"
     },
     {
       "name": "G",
-      "display_name": "Guard"
+      "display_name": "Guard",
+      "group": "Roster"
     },
     {
       "name": "F",
-      "display_name": "Forward"
+      "display_name": "Forward",
+      "group": "Roster"
     },
     {
       "name": "PF/C",
-      "display_name": "Power Forward/Center"
+      "display_name": "Power Forward/Center",
+      "group": "Roster"
     },
     {
       "name": "F/C",
-      "display_name": "Forward/Center"
+      "display_name": "Forward/Center",
+      "group": "Roster"
     },
     {
       "name": "G/F",
-      "display_name": "Guard/Forward"
+      "display_name": "Guard/Forward",
+      "group": "Roster"
     },
     {
       "name": "UT",
-      "display_name": "Utility"
+      "display_name": "Utility",
+      "group": "Roster"
     },
     {
       "name": "BN",
-      "display_name": "Bench"
+      "display_name": "Bench",
+      "group": "Roster"
     }
   ],
   "position_presets": [
@@ -611,4 +623,3 @@
     }
   ]
 }
-

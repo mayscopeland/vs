@@ -11,7 +11,6 @@ defmodule Vs.Scorer do
 
     belongs_to :universe, Vs.Universe
     has_many :observations, Vs.Observation
-    has_many :roster_scorers, Vs.RosterScorer
 
     timestamps()
   end

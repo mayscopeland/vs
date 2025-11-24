@@ -4,11 +4,10 @@ defmodule Vs.Roster do
 
   schema "rosters" do
     field :locked_at, :utc_datetime
+    field :slots, :map
 
     belongs_to :team, Vs.Team
     belongs_to :period, Vs.Period
-
-    has_many :roster_scorers, Vs.RosterScorer
 
     timestamps()
   end
@@ -16,7 +15,7 @@ defmodule Vs.Roster do
   @doc false
   def changeset(roster, attrs) do
     roster
-    |> cast(attrs, [:locked_at, :team_id, :period_id])
+    |> cast(attrs, [:locked_at, :team_id, :period_id, :slots])
     |> validate_required([:team_id, :period_id])
     |> foreign_key_constraint(:team_id)
     |> foreign_key_constraint(:period_id)

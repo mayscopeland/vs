@@ -45,11 +45,34 @@
                     </span>
                   </span>
                 </span>
-                <span class={"pointer-events-none absolute -inset-px rounded-lg border-2 #{if f[:color_scheme_id].value == scheme.id, do: "border-indigo-500", else: "border-transparent"}"} aria-hidden="true"></span>
+                <span class={"pointer-events-none absolute -inset-px rounded-lg border-2 #{if f[:color_scheme_id].value == scheme.id, do: "border-blue-500", else: "border-transparent"}"} aria-hidden="true"></span>
               </label>
             <% end %>
           </div>
           <.error :for={msg <- translate_errors(f.errors || [], :color_scheme_id)}><%= msg %></.error>
+        </div>
+
+        <div class="mb-6">
+          <.label for="font_style">Font Style</.label>
+          <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 mt-2">
+            <%= for style <- @font_styles do %>
+              <label class="relative flex cursor-pointer rounded-lg border bg-white p-4 shadow-sm focus:outline-none">
+                <input type="radio" name={f[:font_style].name} value={style.id} class="sr-only" checked={f[:font_style].value == style.id} />
+                <span class="flex flex-1">
+                  <span class="flex flex-col">
+                    <span class="block text-sm font-medium text-gray-900 mb-2">
+                      <%= style.name %>
+                    </span>
+                    <span class="text-2xl" style="font-family: monospace">
+                      Abc
+                    </span>
+                  </span>
+                </span>
+                <span class={"pointer-events-none absolute -inset-px rounded-lg border-2 #{if f[:font_style].value == style.id, do: "border-blue-500", else: "border-transparent"}"} aria-hidden="true"></span>
+              </label>
+            <% end %>
+          </div>
+          <.error :for={msg <- translate_errors(f.errors || [], :font_style)}><%= msg %></.error>
         </div>
 
         <div class="flex justify-end">
@@ -94,14 +117,33 @@
       // Remove border from all
       document.querySelectorAll('input[name="team[color_scheme_id]"]').forEach(r => {
         const borderSpan = r.parentElement.querySelector('span[aria-hidden="true"]');
-        borderSpan.classList.remove('border-indigo-500');
+        borderSpan.classList.remove('border-blue-500');
         borderSpan.classList.add('border-transparent');
       });
 
       // Add border to selected
       const borderSpan = e.target.parentElement.querySelector('span[aria-hidden="true"]');
       borderSpan.classList.remove('border-transparent');
-      borderSpan.classList.add('border-indigo-500');
+      borderSpan.classList.add('border-blue-500');
+    });
+  });
+</script>
+
+<script>
+  // Simple script to highlight selected font style radio button visually
+  document.querySelectorAll('input[name="team[font_style]"]').forEach(radio => {
+    radio.addEventListener('change', (e) => {
+      // Remove border from all
+      document.querySelectorAll('input[name="team[font_style]"]').forEach(r => {
+        const borderSpan = r.parentElement.querySelector('span[aria-hidden="true"]');
+        borderSpan.classList.remove('border-blue-500');
+        borderSpan.classList.add('border-transparent');
+      });
+
+      // Add border to selected
+      const borderSpan = e.target.parentElement.querySelector('span[aria-hidden="true"]');
+      borderSpan.classList.remove('border-transparent');
+      borderSpan.classList.add('border-blue-500');
     });
   });
 </script>

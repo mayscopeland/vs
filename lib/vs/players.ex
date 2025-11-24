@@ -5,7 +5,7 @@ defmodule Vs.Players do
 
   import Ecto.Query, warn: false
   alias Vs.Repo
-  alias Vs.{Scorer, RosterScorer, League, Observation}
+  alias Vs.{Scorer, League, Observation}
 
   @doc """
   Returns all scorers/players that are not rostered in a specific league.
@@ -21,14 +21,14 @@ defmodule Vs.Players do
 
     # Get all scorer IDs that are rostered in this league
     rostered_scorer_ids =
-      from(rs in RosterScorer,
-        join: r in assoc(rs, :roster),
+      from(r in Vs.Roster,
         join: t in assoc(r, :team),
         where: t.league_id == ^league_id,
-        select: rs.scorer_id,
-        distinct: true
+        select: r.slots
       )
       |> Repo.all()
+      |> Enum.flat_map(&Map.values/1)
+      |> Enum.uniq()
 
     # Base query for available scorers
     query =
@@ -86,23 +86,21 @@ defmodule Vs.Players do
       Observation
       |> where([o], o.scorer_id in ^player_ids)
       |> where([o], o.season_year == ^season_year)
-      |> select([o], %{scorer_id: o.scorer_id, metric: o.metric, value: o.value})
+      |> select([o], %{scorer_id: o.scorer_id, stats: o.stats})
       |> Repo.all()
 
-    # Group by scorer_id and metric, summing the values
+    # Group by scorer_id and aggregate stats
     observations
     |> Enum.group_by(& &1.scorer_id)
-    |> Enum.map(fn {scorer_id, obs} ->
-      stats =
-        obs
-        |> Enum.group_by(& &1.metric)
-        |> Enum.map(fn {metric, values} ->
-          total = Enum.reduce(values, 0, fn v, acc -> acc + v.value end)
-          {metric, total}
+    |> Enum.map(fn {scorer_id, obs_list} ->
+      aggregated_stats =
+        obs_list
+        |> Enum.map(& &1.stats)
+        |> Enum.reduce(%{}, fn stats, acc ->
+          Map.merge(acc, stats, fn _k, v1, v2 -> v1 + v2 end)
         end)
-        |> Map.new()
 
-      {scorer_id, stats}
+      {scorer_id, aggregated_stats}
     end)
     |> Map.new()
   end

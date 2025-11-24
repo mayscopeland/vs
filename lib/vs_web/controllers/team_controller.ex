@@ -35,7 +35,7 @@ defmodule VsWeb.TeamController do
       end
 
     # Get roster positions for league
-    roster_positions = Teams.list_roster_positions_for_league(league_id)
+    roster_positions = Leagues.get_active_roster_positions(league)
 
     # Build position groups structure
     position_groups = Teams.build_position_groups(roster_positions, roster, league)
@@ -70,13 +70,15 @@ defmodule VsWeb.TeamController do
       end
 
     color_schemes = Vs.Team.ColorSchemes.all()
+    font_styles = Vs.Team.FontStyles.all()
 
     render(conn, :edit,
       league: league,
       team: team,
       current_period: current_period,
       roster: roster,
-      color_schemes: color_schemes
+      color_schemes: color_schemes,
+      font_styles: font_styles
     )
   end
 
@@ -101,6 +103,7 @@ defmodule VsWeb.TeamController do
           end
 
         color_schemes = Vs.Team.ColorSchemes.all()
+        font_styles = Vs.Team.FontStyles.all()
 
         render(conn, :edit,
           league: league,
@@ -108,6 +111,7 @@ defmodule VsWeb.TeamController do
           current_period: current_period,
           roster: roster,
           color_schemes: color_schemes,
+          font_styles: font_styles,
           changeset: changeset
         )
     end

@@ -198,7 +198,7 @@ defmodule Vs.Team.ColorSchemes do
       id: "tampa-bay-rays",
       name: "Tampa Bay Rays",
       primary: "#092c5c",
-      accent: "#8fbc36",
+      accent: "#8fbce6",
       text: "#ffffff"
     },
     %{

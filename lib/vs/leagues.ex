@@ -1,9 +1,7 @@
 defmodule Vs.Leagues do
-
-
   import Ecto.Query, warn: false
   alias Vs.Repo
-  alias Vs.{League, Universe, Period, RosterPosition, ScoringCategory}
+  alias Vs.{League, Universe, Period}
 
   def list_leagues do
     League
@@ -40,56 +38,73 @@ defmodule Vs.Leagues do
         |> Repo.insert!()
       end)
 
-      # Create roster positions from first position preset
-      first_position_preset = List.first(plugin_config.position_presets)
+      # Get defaults from presets
+      roster_settings =
+        case List.first(plugin_config.position_presets) do
+          nil -> %{}
+          preset -> preset.positions
+        end
 
-      if first_position_preset do
-        first_position_preset.positions
-        |> Enum.with_index(1)
-        |> Enum.each(fn {{position, count}, sequence} ->
-          %RosterPosition{}
-          |> RosterPosition.changeset(%{
-            league_id: league.id,
-            position: position,
-            count: count,
-            sequence: sequence
-          })
-          |> Repo.insert!()
-        end)
-      end
+      scoring_settings =
+        case List.first(plugin_config.category_presets) do
+          nil -> %{}
+          preset -> preset.categories
+        end
 
-      # Create scoring categories from first category preset
-      first_category_preset = List.first(plugin_config.category_presets)
-
-      if first_category_preset do
-        # Build a map of category name -> available category info for lookup
-        available_categories_map =
-          plugin_config.available_categories
-          |> Enum.map(fn cat -> {cat.name, cat} end)
-          |> Map.new()
-
-        first_category_preset.categories
-        |> Enum.with_index(1)
-        |> Enum.each(fn {{name, multiplier}, sequence} ->
-          # Look up formula and format from available_categories
-          available_cat = Map.get(available_categories_map, name)
-          formula = if available_cat, do: available_cat.formula, else: nil
-          format = if available_cat, do: available_cat.format, else: "integer"
-
-          %ScoringCategory{}
-          |> ScoringCategory.changeset(%{
-            league_id: league.id,
-            name: name,
-            multiplier: multiplier,
-            formula: formula,
-            format: format,
-            sequence: sequence
-          })
-          |> Repo.insert!()
-        end)
-      end
-
+      # Update league with defaults
       league
+      |> League.changeset(%{
+        roster_settings: roster_settings,
+        scoring_settings: scoring_settings
+      })
+      |> Repo.update!()
+    end)
+  end
+
+  def get_active_scoring_categories(league) do
+    # Ensure universe is loaded
+    league = Repo.preload(league, :universe)
+
+    config =
+      Vs.Plugins.Registry.get_plugin_config!(league.universe.contest_type, league.season_year)
+
+    settings = league.scoring_settings || %{}
+
+    config.available_categories
+    |> Enum.filter(fn cat -> Map.has_key?(settings, cat.name) end)
+    |> Enum.map(fn cat ->
+      Map.put(cat, :multiplier, Map.get(settings, cat.name))
+    end)
+  end
+
+  def get_active_roster_positions(league) do
+    # Ensure universe is loaded
+    league = Repo.preload(league, :universe)
+
+    config =
+      Vs.Plugins.Registry.get_plugin_config!(league.universe.contest_type, league.season_year)
+
+    settings = league.roster_settings || %{}
+
+    # Create a map of available positions for ordering and metadata
+    available_positions = config.available_positions
+
+    # We want to return a list of %{position: "PG", count: 1, group: <from config>, ...}
+    # We iterate through available_positions to maintain order
+    available_positions
+    |> Enum.filter(fn pos -> Map.has_key?(settings, pos.name) end)
+    |> Enum.map(fn pos ->
+      count = Map.get(settings, pos.name)
+
+      %{
+        position: pos.name,
+        display_name: pos.display_name,
+        count: count,
+        # Use group from position config
+        group: pos.group,
+        # We can add logic for sub-positions later if needed
+        sub_positions: nil
+      }
     end)
   end
 end

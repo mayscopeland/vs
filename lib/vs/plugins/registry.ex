@@ -186,7 +186,9 @@ defmodule Vs.Plugins.Registry do
     Enum.map(positions_list, fn position ->
       %{
         name: position["name"],
-        display_name: position["display_name"]
+        display_name: position["display_name"],
+        # Default to "Roster" if not specified
+        group: position["group"] || "Roster"
       }
     end)
   end

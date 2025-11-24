@@ -60,6 +60,59 @@ defmodule Vs.Plugins do
     end
   end
 
+  @doc """
+  Fetches observations for a specific date and stores them in the database.
+  """
+  def fetch_and_store_observations(contest_type, date, universe_id) do
+    with {:ok, module} <- resolve_plugin_module(contest_type),
+         {:ok, %{player_stats: player_stats}} <- module.get_observations(date) do
+      # Get all scorers for this universe to map external_id -> id
+      scorers_map =
+        from(s in Scorer, where: s.universe_id == ^universe_id, select: {s.external_id, s.id})
+        |> Repo.all()
+        |> Map.new()
+
+      now = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
+      # Simplified season year logic
+      season_year = date.year
+
+      observations =
+        player_stats
+        |> Enum.map(fn stat ->
+          external_id = Map.get(stat, "PLAYER_ID") |> to_string()
+          scorer_id = Map.get(scorers_map, external_id)
+
+          if scorer_id do
+            %{
+              contest_type: contest_type,
+              season_year: season_year,
+              game_date: date,
+              scorer_id: scorer_id,
+              # Store the entire stat map as JSON
+              stats: stat,
+              recorded_at: now,
+              inserted_at: now,
+              updated_at: now
+            }
+          else
+            nil
+          end
+        end)
+        |> Enum.reject(&is_nil/1)
+
+      # Upsert observations
+      {count, _} =
+        Repo.insert_all(
+          Vs.Observation,
+          observations,
+          on_conflict: {:replace, [:stats, :updated_at]},
+          conflict_target: [:scorer_id, :game_date]
+        )
+
+      {:ok, count}
+    end
+  end
+
   # Bulk inserts scorers into the database.
   # Uses insert_all for efficiency. Skips duplicates based on external_id and universe_id.
   defp insert_scorers(scorers, contest_type, universe_id) when is_list(scorers) do

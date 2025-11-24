@@ -2,7 +2,6 @@
 
 @theme {
   --font-sans: 'Source Sans 3', sans-serif;
-  --font-logo: 'Manufacturing Consent', serif;
 
   --color-red-50: #fff0f0;
   --color-red-100: #ffddde;
@@ -27,8 +26,6 @@
   --color-azure-radiance-800: #0b5cc2;
   --color-azure-radiance-900: #104f98;
   --color-azure-radiance-950: #0f315c;
-
-
 
 }
 

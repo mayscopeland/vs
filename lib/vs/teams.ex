@@ -5,7 +5,7 @@ defmodule Vs.Teams do
 
   import Ecto.Query, warn: false
   alias Vs.Repo
-  alias Vs.{Team, Roster, Period, RosterPosition}
+  alias Vs.{Team, Roster, Period, Scorer}
 
   @doc """
   Gets a single team by ID with managers and users preloaded.
@@ -110,11 +110,9 @@ defmodule Vs.Teams do
           |> Repo.insert()
 
         roster
-        |> Repo.preload(roster_scorers: :scorer)
 
       roster ->
         roster
-        |> Repo.preload(roster_scorers: :scorer)
     end
   end
 
@@ -144,24 +142,45 @@ defmodule Vs.Teams do
   ```
   """
   def build_position_groups(roster_positions, roster, _league) do
-    # Get scorers from roster if available
-    scorers =
+    # Get all scorer IDs from roster slots
+    {scorer_ids, slots_map} =
       case roster do
-        nil -> []
-        roster -> Enum.map(roster.roster_scorers, & &1.scorer)
+        nil ->
+          {[], %{}}
+
+        %Roster{slots: nil} ->
+          {[], %{}}
+
+        %Roster{slots: slots} ->
+          # slots is expected to be %{"PG" => [id1], "C" => [id2, id3]}
+          ids =
+            slots
+            |> Map.values()
+            |> List.flatten()
+            |> Enum.uniq()
+
+          {ids, slots}
+      end
+
+    # Fetch scorers
+    scorers =
+      if Enum.empty?(scorer_ids) do
+        %{}
+      else
+        Scorer
+        |> where([s], s.id in ^scorer_ids)
+        |> Repo.all()
+        |> Map.new(fn s -> {s.id, s} end)
       end
 
     # Group roster positions by group field
     grouped_positions =
       roster_positions
       |> Enum.group_by(& &1.group)
-      |> Enum.sort_by(fn {_group, positions} ->
-        positions |> Enum.map(& &1.sequence) |> Enum.min()
-      end)
 
     # Build slots for each group
     Enum.map(grouped_positions, fn {group, positions} ->
-      slots = build_slots_for_positions(positions, scorers)
+      slots = build_slots_for_positions(positions, slots_map, scorers)
 
       %{
         group: group,
@@ -170,62 +189,57 @@ defmodule Vs.Teams do
     end)
   end
 
-  defp build_slots_for_positions(positions, scorers) do
-    {slots, _remaining_scorers} =
-      positions
-      |> Enum.sort_by(& &1.sequence)
-      |> Enum.flat_map_reduce(scorers, fn position, acc_scorers ->
-        # Create 'count' number of slots for this position
-        slots_for_position =
-          1..position.count
-          |> Enum.map_reduce(acc_scorers, fn _idx, inner_scorers ->
-            # Try to find a scorer that matches this position
-            scorer = find_matching_scorer(position, inner_scorers)
+  defp build_slots_for_positions(positions, slots_map, scorers_map) do
+    # positions is a list of %{position: "PG", count: 1, ...}
 
-            # Remove matched scorer from list to avoid double-assignment
-            updated_scorers =
-              if scorer, do: List.delete(inner_scorers, scorer), else: inner_scorers
+    # We need to track which player IDs we've already assigned to avoid duplicates
+    # if the data is messy, but strictly speaking we iterate through positions.
 
-            slot = %{
-              position: position.position,
-              sub_positions: position.sub_positions,
+    # However, slots_map is %{"PG" => [id1], "C" => [id1, id2]}
+    # We need to consume these IDs as we generate slots.
+
+    {slots, _} =
+      Enum.flat_map_reduce(positions, slots_map, fn position_def, current_slots_map ->
+        # position_def.position is "PG"
+        # position_def.count is 1 (or more)
+
+        # Get the list of player IDs assigned to this position
+        assigned_ids = Map.get(current_slots_map, position_def.position, [])
+
+        # Take 'count' number of IDs (or nils if not enough)
+        # We also need to remove them from the map for this position so we don't reuse them
+        # (though typically we process each position type once)
+
+        {ids_for_this_pos, remaining_ids} = Enum.split(assigned_ids, position_def.count)
+
+        # If we have fewer IDs than count, pad with nils
+        padded_ids =
+          if length(ids_for_this_pos) < position_def.count do
+            ids_for_this_pos ++ List.duplicate(nil, position_def.count - length(ids_for_this_pos))
+          else
+            ids_for_this_pos
+          end
+
+        # Create slots
+        new_slots =
+          Enum.map(padded_ids, fn scorer_id ->
+            scorer = if scorer_id, do: Map.get(scorers_map, scorer_id), else: nil
+
+            %{
+              position: position_def.position,
+              sub_positions: position_def.sub_positions,
               scorer: scorer,
               filled: !is_nil(scorer),
-              roster_position: position
+              roster_position: position_def
             }
-
-            {slot, updated_scorers}
           end)
 
-        slots_for_position
+        # Update map (though strictly we only visit each position key once usually)
+        updated_map = Map.put(current_slots_map, position_def.position, remaining_ids)
+
+        {new_slots, updated_map}
       end)
 
     slots
-  end
-
-  defp find_matching_scorer(roster_position, scorers) do
-    # Get valid positions for this slot
-    valid_positions =
-      if roster_position.sub_positions do
-        String.split(roster_position.sub_positions, ",")
-        |> Enum.map(&String.trim/1)
-      else
-        [roster_position.position]
-      end
-
-    # Find first scorer that matches any valid position and hasn't been assigned
-    Enum.find(scorers, fn scorer ->
-      scorer.position in valid_positions
-    end)
-  end
-
-  @doc """
-  Gets all roster positions for a league, ordered by sequence.
-  """
-  def list_roster_positions_for_league(league_id) do
-    RosterPosition
-    |> where([rp], rp.league_id == ^league_id)
-    |> order_by([rp], asc: rp.sequence)
-    |> Repo.all()
   end
 end

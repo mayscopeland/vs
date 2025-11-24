@@ -5,8 +5,7 @@ defmodule Vs.Observation do
   schema "observations" do
     field :contest_type, :string
     field :season_year, :integer
-    field :metric, :string
-    field :value, :integer
+    field :stats, :map
     field :game_date, :date
     field :recorded_at, :utc_datetime
 
@@ -18,8 +17,9 @@ defmodule Vs.Observation do
   @doc false
   def changeset(observation, attrs) do
     observation
-    |> cast(attrs, [:contest_type, :season_year, :metric, :value, :game_date, :recorded_at, :scorer_id])
-    |> validate_required([:contest_type, :season_year, :metric, :value, :game_date, :scorer_id])
+    |> cast(attrs, [:contest_type, :season_year, :stats, :game_date, :recorded_at, :scorer_id])
+    |> validate_required([:contest_type, :season_year, :stats, :game_date, :scorer_id])
     |> foreign_key_constraint(:scorer_id)
+    |> unique_constraint([:scorer_id, :game_date], name: :observations_scorer_id_game_date_index)
   end
 end

@@ -27,7 +27,7 @@
                       value={~p"/leagues/#{league.id}"}
                       selected={assigns[:league] && @league.id == league.id}
                     >
-                      <%= league.name %> (<%= league.season_year %>)
+                      <%= league.name %>
                     </option>
                   <% end %>
                 </select>
@@ -156,7 +156,7 @@
                 value={~p"/leagues/#{league.id}"}
                 selected={assigns[:league] && @league.id == league.id}
               >
-                <%= league.name %> (<%= league.season_year %>)
+                <%= league.name %>
               </option>
             <% end %>
           </select>
