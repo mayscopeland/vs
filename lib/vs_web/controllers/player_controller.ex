@@ -2,7 +2,7 @@ defmodule VsWeb.PlayerController do
   use VsWeb, :controller
 
   alias Vs.{Leagues, Players}
-  alias Vs.Stats.{Calculator, Formatter}
+  alias Vs.Stats.Formatter
 
   def list(conn, %{"league_id" => league_id} = params) do
     league =

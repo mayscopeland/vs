@@ -11,51 +11,9 @@ defmodule Vs.Plugins.NBATest do
 
       # Verify functions exist
       functions = NBA.__info__(:functions)
-      assert {:get_initial_data, 1} in functions
+
       assert {:get_schedule, 1} in functions
       assert {:get_observations, 1} in functions
-    end
-  end
-
-  describe "get_initial_data/1" do
-    @tag :external_api
-    test "returns scorers data structure" do
-      # This test makes an actual API call - only run when needed
-      case NBA.get_initial_data(2024) do
-        {:ok, data} ->
-          assert is_map(data)
-          assert Map.has_key?(data, :scorers)
-          assert is_list(data.scorers)
-
-          if length(data.scorers) > 0 do
-            scorer = List.first(data.scorers)
-            assert Map.has_key?(scorer, :name)
-            assert Map.has_key?(scorer, :team)
-            assert Map.has_key?(scorer, :position)
-            assert Map.has_key?(scorer, :contest_type)
-            assert scorer.contest_type == "NBA"
-          end
-
-        {:error, reason} ->
-          # API might be down or rate-limited, just verify error format
-          assert is_tuple(reason) or is_atom(reason)
-      end
-    end
-
-    test "handles invalid season gracefully" do
-      # Very old season that shouldn't have data
-      result = NBA.get_initial_data(1800)
-
-      case result do
-        {:ok, data} ->
-          # Should return empty list or minimal data
-          assert is_map(data)
-          assert Map.has_key?(data, :scorers)
-
-        {:error, _reason} ->
-          # Or return an error, both are acceptable
-          assert true
-      end
     end
   end
 
@@ -167,20 +125,6 @@ defmodule Vs.Plugins.NBATest do
         {:error, _reason} ->
           # Error could be from API, not necessarily our date calculation
           assert true
-      end
-    end
-  end
-
-  describe "error handling" do
-    test "handles network errors gracefully" do
-      # Test with a very short timeout to simulate network failure
-      # This would require modifying the module to accept timeout as param
-      # For now, just verify the function returns proper error tuples
-      result = NBA.get_initial_data(2024)
-
-      case result do
-        {:ok, _data} -> assert true
-        {:error, reason} -> assert is_tuple(reason) or is_atom(reason)
       end
     end
   end
