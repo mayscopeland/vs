@@ -33,6 +33,7 @@ defmodule VsWeb.Router do
 
     # Player routes
     get "/leagues/:league_id/players", PlayerController, :list
+    get "/leagues/:league_id/players/:id", PlayerController, :show
   end
 
   # Other scopes may use custom stacks.

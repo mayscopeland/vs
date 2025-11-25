@@ -81,4 +81,60 @@ defmodule VsWeb.PlayerController do
       sort_dir: sort_dir
     )
   end
+
+  def show(conn, %{"league_id" => league_id, "id" => player_id} = _params) do
+    league = Leagues.get_league!(league_id)
+    player = Players.get_scorer!(player_id)
+    scoring_categories = Leagues.get_active_scoring_categories(league)
+
+    # Generate stat source options (same labels as player list dropdown)
+    current_year = league.season_year
+
+    stat_source_options = [
+      {"#{current_year} Stats", to_string(current_year)},
+      {"#{current_year} Preseason Projections", "projection"},
+      {"#{current_year - 1} Stats", to_string(current_year - 1)},
+      {"#{current_year - 2} Stats", to_string(current_year - 2)},
+      {"#{current_year - 3} Stats", to_string(current_year - 3)}
+    ]
+
+    # Build stats for each year/source
+    stats_by_year =
+      stat_source_options
+      |> Enum.map(fn {label, source_key} ->
+        raw_stats = Map.get(player.stats, source_key, %{})
+
+        # Calculate derived stats
+        calculated_stats =
+          scoring_categories
+          |> Enum.reduce(raw_stats, fn category, acc ->
+            if category.formula do
+              val = Vs.Stats.Calculator.calculate(category.formula, raw_stats)
+              Map.put(acc, category.name, val)
+            else
+              acc
+            end
+          end)
+
+        # Format stats for display
+        formatted_stats =
+          scoring_categories
+          |> Enum.map(fn category ->
+            raw_value = Map.get(calculated_stats, category.name)
+            formatted_value = Formatter.format(raw_value, category.format)
+            {category.name, formatted_value}
+          end)
+          |> Map.new()
+
+        {label, source_key, formatted_stats}
+      end)
+
+    render(conn, :show,
+      league: league,
+      player: player,
+      scoring_categories: scoring_categories,
+      stats_by_year: stats_by_year,
+      layout: false
+    )
+  end
 end

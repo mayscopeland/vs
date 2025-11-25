@@ -575,12 +575,14 @@ defmodule VsWeb.CoreComponents do
 
   ## Examples
 
-      <.player_info name="John Doe" team="LAL" position="PG-SG" />
+      <.player_info name="John Doe" team="LAL" position="PG-SG" player_id={123} league_id={456} />
       <.player_info name="Jane Smith" team="BOS" position="C" />
   """
   attr :name, :string, required: true
   attr :team, :string, default: nil
   attr :position, :string, default: nil
+  attr :player_id, :integer, default: nil
+  attr :league_id, :integer, default: nil
 
   def player_info(assigns) do
     positions = if assigns.position, do: String.split(assigns.position, "-"), else: []
@@ -588,9 +590,20 @@ defmodule VsWeb.CoreComponents do
 
     ~H"""
     <div class="flex items-center gap-1">
-      <span class="text-sm font-medium text-gray-900">
-        <%= @name %>
-      </span>
+      <%= if @player_id && @league_id do %>
+        <button
+          type="button"
+          class="player-modal-trigger text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline cursor-pointer"
+          data-player-id={@player_id}
+          data-league-id={@league_id}
+        >
+          <%= @name %>
+        </button>
+      <% else %>
+        <span class="text-sm font-medium text-gray-900">
+          <%= @name %>
+        </span>
+      <% end %>
       <span class="text-xs text-gray-500">
         <%= @team || "N/A" %>
       </span>

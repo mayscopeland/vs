@@ -1,0 +1,48 @@
+<div class="p-6">
+  <!-- Player Header -->
+  <div class="mb-6">
+    <h2 class="text-2xl font-bold text-gray-900"><%= @player.name %></h2>
+    <div class="mt-2 flex items-center gap-2">
+      <span class="text-sm text-gray-600"><%= @player.team || "N/A" %></span>
+      <%= if @player.position do %>
+        <%= for position <- String.split(@player.position, "-") do %>
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+            <%= position %>
+          </span>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Stats Table -->
+  <div class="overflow-x-auto">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-50">
+        <tr>
+          <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sticky left-0 bg-gray-50">
+            Season
+          </th>
+          <%= for category <- @scoring_categories do %>
+            <th scope="col" class="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <%= category.name %>
+            </th>
+          <% end %>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">
+        <%= for {label, _source_key, stats} <- @stats_by_year do %>
+          <tr>
+            <td class="px-3 py-3 whitespace-nowrap text-sm font-medium text-gray-900 sticky left-0 bg-white">
+              <%= label %>
+            </td>
+            <%= for category <- @scoring_categories do %>
+              <td class="px-3 py-3 whitespace-nowrap text-sm text-gray-700 text-right">
+                <%= Map.get(stats, category.name) || "-" %>
+              </td>
+            <% end %>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

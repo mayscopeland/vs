@@ -76,7 +76,7 @@
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
                       <%= if slot.scorer do %>
-                        <.player_info name={slot.scorer.name} team={slot.scorer.team} position={slot.scorer.position} />
+                        <.player_info name={slot.scorer.name} team={slot.scorer.team} position={slot.scorer.position} player_id={slot.scorer.id} league_id={@league.id} />
                       <% else %>
                         <span class="text-sm text-gray-400 italic">Empty</span>
                       <% end %>
