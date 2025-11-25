@@ -1,10 +1,12 @@
 <div>
   <!-- Team Header -->
-  <div class="mb-8 bg-white shadow rounded-lg p-6 flex items-center">
-    <%
-      scheme = if @team.color_scheme_id, do: Vs.Team.ColorSchemes.get(@team.color_scheme_id), else: Vs.Team.ColorSchemes.default()
-      scheme = scheme || Vs.Team.ColorSchemes.default()
-    %>
+  <%
+    scheme = if @team.color_scheme_id, do: Vs.Team.ColorSchemes.get(@team.color_scheme_id), else: Vs.Team.ColorSchemes.default()
+    scheme = scheme || Vs.Team.ColorSchemes.default()
+  %>
+  <div class="mb-8 bg-white shadow rounded-lg overflow-hidden">
+    <div style={"height: 4px; background: linear-gradient(to right, #{scheme.primary}, #{scheme.accent});"}></div>
+    <div class="p-6 flex items-center">
     <div
       class="flex-shrink-0 size-16 rounded-full flex items-center justify-center border-4"
       style={"background-color: #{scheme.primary}; border-color: #{scheme.accent}"}
@@ -35,6 +37,7 @@
       <div class="text-sm text-gray-500 mt-1">
         <%= if @team.managers != [], do: "Manager: " <> Enum.map(@team.managers, & &1.user.display_name) |> Enum.join(", "), else: "No Manager" %>
       </div>
+      </div>
     </div>
   </div>
 
@@ -47,7 +50,9 @@
   <!-- Roster Display -->
   <div class="space-y-6">
     <%= for group <- @position_groups do %>
-      <div class="p-6 bg-white shadow overflow-hidden sm:rounded-lg">
+      <div class="bg-white shadow sm:rounded-lg overflow-hidden">
+        <div style={"height: 3px; background: linear-gradient(to right, #{scheme.primary}, #{scheme.accent});"}></div>
+        <div class="p-6">
         <div class="overflow-x-auto">
           <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
@@ -86,6 +91,7 @@
               <% end %>
             </tbody>
           </table>
+          </div>
         </div>
       </div>
     <% end %>
