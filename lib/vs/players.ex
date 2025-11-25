@@ -70,27 +70,45 @@ defmodule Vs.Players do
 
     # Sort in memory
     sorted_players =
-      if sort_by == "name" do
-        if sort_dir == "desc" do
-          Enum.sort_by(processed_players, & &1.name, :desc)
-        else
-          Enum.sort_by(processed_players, & &1.name, :asc)
-        end
-      else
-        # Sort by stat category
-        sorter = fn p ->
-          case Map.get(p.stats, sort_by) do
-            # Treat nil as very low value
-            nil -> -999_999.0
-            val -> val
+      cond do
+        sort_by == "name" ->
+          if sort_dir == "desc" do
+            Enum.sort_by(processed_players, & &1.name, :desc)
+          else
+            Enum.sort_by(processed_players, & &1.name, :asc)
           end
-        end
 
-        if sort_dir == "asc" do
-          Enum.sort_by(processed_players, sorter, :asc)
-        else
-          Enum.sort_by(processed_players, sorter, :desc)
-        end
+        sort_by == "rank" ->
+          # Sort by rank for the current stat_source
+          sorter = fn p ->
+            case Map.get(p.rank, stat_source) do
+              # Treat nil as very high rank (unranked players go to the end)
+              nil -> 999_999
+              val -> val
+            end
+          end
+
+          if sort_dir == "asc" do
+            Enum.sort_by(processed_players, sorter, :asc)
+          else
+            Enum.sort_by(processed_players, sorter, :desc)
+          end
+
+        true ->
+          # Sort by stat category
+          sorter = fn p ->
+            case Map.get(p.stats, sort_by) do
+              # Treat nil as very low value
+              nil -> -999_999.0
+              val -> val
+            end
+          end
+
+          if sort_dir == "asc" do
+            Enum.sort_by(processed_players, sorter, :asc)
+          else
+            Enum.sort_by(processed_players, sorter, :desc)
+          end
       end
 
     # Paginate
@@ -124,6 +142,12 @@ defmodule Vs.Players do
       nil -> false
       _ -> true
     end
+  end
+
+  def list_players_for_universe(universe_id) do
+    Scorer
+    |> where([s], s.universe_id == ^universe_id)
+    |> Repo.all()
   end
 
   @doc """

@@ -114,22 +114,9 @@ defmodule VsWeb.LeagueController do
       |> Enum.reject(&(&1 == ""))
       |> Enum.shuffle()
 
-    generate_unique_team_names(places, mascots, count, MapSet.new(), [])
-  end
-
-  defp generate_unique_team_names(_places, _mascots, 0, _used, acc), do: Enum.reverse(acc)
-
-  defp generate_unique_team_names(places, mascots, count, used, acc) do
-    place = Enum.random(places)
-    mascot = Enum.random(mascots)
-    team_name = "#{place} #{mascot}"
-
-    if MapSet.member?(used, team_name) do
-      # If duplicate, try again
-      generate_unique_team_names(places, mascots, count, used, acc)
-    else
-      new_used = MapSet.put(used, team_name)
-      generate_unique_team_names(places, mascots, count - 1, new_used, [team_name | acc])
-    end
+    places
+    |> Enum.take(count)
+    |> Enum.zip(Enum.take(mascots, count))
+    |> Enum.map(fn {place, mascot} -> "#{place} #{mascot}" end)
   end
 end

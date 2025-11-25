@@ -1,84 +1,47 @@
 <div class="text-center max-w-3xl mx-auto">
-  <h1 class="text-5xl font-bold tracking-tight text-gray-900 sm:text-7xl">
-    Welcome to Vs
-  </h1>
+  <div class="flex justify-center mb-8">
+    <img src={~p"/images/vs.svg"} alt="VS Logo" class="h-24 w-24" />
+  </div>
+
   <p class="mt-6 text-lg leading-8 text-gray-600">
     A fantasy sports league management platform with plugin-based architecture supporting multiple sports.
   </p>
-  <div class="mt-10 flex items-center justify-center gap-x-6">
+
+  <div class="mt-10 flex flex-col items-center justify-center gap-y-6">
     <a
       href={~p"/leagues/add"}
-      class="btn-primary px-6 py-3 text-base inline-flex items-center"
+      class="btn-primary px-6 py-3 text-base inline-flex items-center w-full sm:w-auto justify-center"
     >
-      Create league
+      <svg class="mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+      </svg>
+      Create League
     </a>
-  </div>
-  <!-- Features Grid -->
-  <div class="mt-16 grid grid-cols-1 gap-8 sm:grid-cols-3">
-    <div class="bg-white p-6 rounded-lg shadow">
-      <div class="flex items-center justify-center h-12 w-12 rounded-md bg-blue-500 text-white mx-auto">
-        <svg
-          class="h-6 w-6"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-          />
-        </svg>
-      </div>
-      <h3 class="mt-4 text-lg font-medium text-gray-900">Multiple Sports</h3>
-      <p class="mt-2 text-sm text-gray-500">
-        Plugin-based architecture supports different sports leagues with customizable scoring.
-      </p>
-    </div>
 
-    <div class="bg-white p-6 rounded-lg shadow">
-      <div class="flex items-center justify-center h-12 w-12 rounded-md bg-blue-500 text-white mx-auto">
-        <svg
-          class="h-6 w-6"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-          />
-        </svg>
+    <%= if assigns[:user_leagues] && length(@user_leagues) > 0 do %>
+      <div class="w-full max-w-md mt-8">
+        <h2 class="text-lg font-medium text-gray-900 mb-4">Your Leagues</h2>
+        <div class="bg-white shadow overflow-hidden sm:rounded-md">
+          <ul role="list" class="divide-y divide-gray-200">
+            <%= for league <- @user_leagues do %>
+              <li>
+                <a href={~p"/leagues/#{league.id}"} class="block hover:bg-gray-50">
+                  <div class="px-4 py-4 sm:px-6 flex items-center justify-between">
+                    <div class="flex items-center">
+                      <p class="text-sm font-medium text-blue-600 truncate"><%= league.name %></p>
+                    </div>
+                    <div class="ml-2 flex-shrink-0 flex">
+                      <svg class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                      </svg>
+                    </div>
+                  </div>
+                </a>
+              </li>
+            <% end %>
+          </ul>
+        </div>
       </div>
-      <h3 class="mt-4 text-lg font-medium text-gray-900">Roster Management</h3>
-      <p class="mt-2 text-sm text-gray-500">
-        Manage your team's roster across multiple time periods with flexible position requirements.
-      </p>
-    </div>
-
-    <div class="bg-white p-6 rounded-lg shadow">
-      <div class="flex items-center justify-center h-12 w-12 rounded-md bg-blue-500 text-white mx-auto">
-        <svg
-          class="h-6 w-6"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-          />
-        </svg>
-      </div>
-      <h3 class="mt-4 text-lg font-medium text-gray-900">Live Scoring</h3>
-      <p class="mt-2 text-sm text-gray-500">
-        Track your team's performance with customizable scoring categories and real-time updates.
-      </p>
-    </div>
+    <% end %>
   </div>
 </div>

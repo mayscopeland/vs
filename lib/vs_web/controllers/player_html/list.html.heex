@@ -56,6 +56,28 @@
                 <% end %>
               </div>
             </th>
+            <th
+              scope="col"
+              class="px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 group"
+              onclick={"window.location.href='?sort_by=rank&sort_dir=#{if @sort_by == "rank" && @sort_dir == "asc", do: "desc", else: "asc"}&stat_source=#{@stat_source}&page=1'"}
+            >
+              <div class="flex items-center justify-center">
+                Rank
+                <%= if @sort_by == "rank" do %>
+                  <span class="ml-2 flex-none rounded bg-gray-200 text-gray-900 group-hover:bg-gray-300">
+                    <%= if @sort_dir == "asc" do %>
+                      <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M14.77 12.79a.75.75 0 01-1.06-.02L10 8.832 6.29 12.77a.75.75 0 11-1.08-1.04l4.25-4.5a.75.75 0 011.08 0l4.25 4.5a.75.75 0 01-.02 1.06z" clip-rule="evenodd" />
+                      </svg>
+                    <% else %>
+                      <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                      </svg>
+                    <% end %>
+                  </span>
+                <% end %>
+              </div>
+            </th>
             <%= for category <- @scoring_categories do %>
               <th
                 scope="col"
@@ -91,6 +113,9 @@
               <td class="px-6 py-4 whitespace-nowrap">
                 <.player_info name={player.name} team={player.team} position={player.position} />
               </td>
+              <td class="px-3 py-4 whitespace-nowrap text-center text-sm text-gray-700">
+                <%= Map.get(player.rank, @stat_source) || "-" %>
+              </td>
               <%= for category <- @scoring_categories do %>
                 <td class="px-3 py-4 whitespace-nowrap text-center text-sm text-gray-700">
                   <%= get_in(@player_stats, [player.id, category.name]) || "-" %>
@@ -109,7 +134,7 @@
           <% end %>
 
           <%= if length(@players) == 0 do %>
-            <% colspan = length(@scoring_categories) + 2 %>
+            <% colspan = length(@scoring_categories) + 3 %>
             <tr>
               <td
                 colspan={colspan}

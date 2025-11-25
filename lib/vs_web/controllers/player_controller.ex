@@ -14,7 +14,7 @@ defmodule VsWeb.PlayerController do
     page = Map.get(params, "page", "1") |> String.to_integer()
     per_page = 50
     stat_source = Map.get(params, "stat_source", to_string(league.season_year))
-    sort_by = Map.get(params, "sort_by", "name")
+    sort_by = Map.get(params, "sort_by", "rank")
     sort_dir = Map.get(params, "sort_dir", "asc")
 
     {players, total_count} =

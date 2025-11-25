@@ -28,6 +28,24 @@ defmodule Vs.Leagues do
     |> Repo.insert()
   end
 
+  def update_league(%League{} = league, attrs) do
+    result =
+      league
+      |> League.changeset(attrs)
+      |> Repo.update()
+
+    case result do
+      {:ok, updated_league} ->
+        # Recalculate ranks if scoring settings changed
+        # For simplicity, we just always recalculate if update succeeds
+        Vs.Scorers.Ranker.calculate_ranks(updated_league)
+        {:ok, updated_league}
+
+      error ->
+        error
+    end
+  end
+
   def setup_league_defaults(league, plugin_config) do
     Repo.transaction(fn ->
       # Create periods
@@ -45,19 +63,26 @@ defmodule Vs.Leagues do
           preset -> preset.positions
         end
 
-      scoring_settings =
+      {scoring_settings, scoring_type} =
         case List.first(plugin_config.category_presets) do
-          nil -> %{}
-          preset -> preset.categories
+          nil -> {%{}, "points"}
+          preset -> {preset.categories, Map.get(preset, "type", "points")}
         end
 
       # Update league with defaults
+      league =
+        league
+        |> League.changeset(%{
+          roster_settings: roster_settings,
+          scoring_settings: scoring_settings,
+          scoring_type: scoring_type
+        })
+        |> Repo.update!()
+
+      # Calculate initial ranks
+      Vs.Scorers.Ranker.calculate_ranks(league)
+
       league
-      |> League.changeset(%{
-        roster_settings: roster_settings,
-        scoring_settings: scoring_settings
-      })
-      |> Repo.update!()
     end)
   end
 

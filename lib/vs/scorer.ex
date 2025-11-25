@@ -9,6 +9,7 @@ defmodule Vs.Scorer do
     field :contest_type, :string
     field :external_id, :string
     field :stats, :map, default: %{}
+    field :rank, :map, default: %{}
 
     belongs_to :universe, Vs.Universe
     has_many :observations, Vs.Observation
@@ -19,7 +20,16 @@ defmodule Vs.Scorer do
   @doc false
   def changeset(scorer, attrs) do
     scorer
-    |> cast(attrs, [:name, :team, :position, :contest_type, :external_id, :universe_id, :stats])
+    |> cast(attrs, [
+      :name,
+      :team,
+      :position,
+      :contest_type,
+      :external_id,
+      :universe_id,
+      :stats,
+      :rank
+    ])
     |> validate_required([:name, :contest_type, :universe_id])
     |> foreign_key_constraint(:universe_id)
   end
