@@ -1,9 +1,9 @@
 <div>
   <!-- League Header -->
   <div class="mb-8">
-    <h1 class="text-3xl font-bold text-gray-900"><%= @league.name %></h1>
+    <h1 class="text-3xl font-bold text-gray-900"><%= @season.name %></h1>
     <p class="mt-2 text-sm text-gray-600">
-      <%= @league.universe.contest_type %> · <%= @league.season_year %> Season
+      <%= @season.league.contest_type %> · <%= @season.season_year %> Season
     </p>
   </div>
 
@@ -16,25 +16,25 @@
           <tr>
             <th
               scope="col"
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              class="px-6 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
             >
               Rank
             </th>
             <th
               scope="col"
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              class="px-6 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
             >
               Team
             </th>
             <th
               scope="col"
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              class="px-6 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
             >
               Manager(s)
             </th>
             <th
               scope="col"
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              class="px-6 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
             >
               Record
             </th>
@@ -43,25 +43,25 @@
         <tbody class="bg-white divide-y divide-gray-200">
           <%= for {team, index} <- Enum.with_index(@teams, 1) do %>
             <tr class="hover:bg-gray-50">
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              <td class="px-6 py-2 whitespace-nowrap text-sm text-gray-500">
                 <%= index %>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap">
+              <td class="px-6 py-2 whitespace-nowrap">
                 <a
-                  href={~p"/leagues/#{@league.id}/teams/#{team.id}"}
+                  href={~p"/leagues/#{@season.id}/teams/#{team.id}"}
                   class="text-sm font-medium text-blue-600 hover:text-blue-900"
                 >
                   <%= team.name %>
                 </a>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              <td class="px-6 py-2 whitespace-nowrap text-sm text-gray-500">
                 <%= if length(team.managers) > 0 do %>
                   <%= Enum.map_join(team.managers, ", ", fn manager -> manager.user.display_name || manager.user.email end) %>
                 <% else %>
                   <span class="text-gray-400 italic">No manager</span>
                 <% end %>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              <td class="px-6 py-2 whitespace-nowrap text-sm text-gray-500">
                 0-0-0
               </td>
             </tr>
@@ -71,7 +71,7 @@
             <tr>
               <td
                 colspan="4"
-                class="px-6 py-4 text-center text-sm text-gray-500"
+                class="px-6 py-2 text-center text-sm text-gray-500"
               >
                 No teams in this league yet.
               </td>

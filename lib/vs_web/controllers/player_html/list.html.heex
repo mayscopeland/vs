@@ -1,11 +1,6 @@
 <div>
   <!-- Header -->
-  <div class="mb-8">
-    <h1 class="text-3xl font-bold text-gray-900">Players</h1>
-    <p class="mt-2 text-sm text-gray-600">
-      <%= @league.name %> · <%= @league.universe.contest_type %>
-    </p>
-  </div>
+
 
   <!-- Players Table -->
   <div class="p-6 bg-white shadow overflow-hidden sm:rounded-lg">
@@ -34,9 +29,12 @@
       <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-gray-50">
           <tr>
+            <th scope="col" class="relative px-6 py-2">
+              <span class="sr-only">Actions</span>
+            </th>
             <th
               scope="col"
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sticky left-0 bg-gray-50 z-10 group cursor-pointer hover:bg-gray-100"
+              class="px-6 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider group cursor-pointer hover:bg-gray-100"
               onclick={"window.location.href='?sort_by=name&sort_dir=#{if @sort_by == "name" && @sort_dir == "asc", do: "desc", else: "asc"}&stat_source=#{@stat_source}&page=1'"}
             >
               <div class="flex items-center">
@@ -58,7 +56,7 @@
             </th>
             <th
               scope="col"
-              class="px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 group"
+              class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 group"
               onclick={"window.location.href='?sort_by=rank&sort_dir=#{if @sort_by == "rank" && @sort_dir == "asc", do: "desc", else: "asc"}&stat_source=#{@stat_source}&page=1'"}
             >
               <div class="flex items-center justify-center">
@@ -81,7 +79,7 @@
             <%= for category <- @scoring_categories do %>
               <th
                 scope="col"
-                class="px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 group"
+                class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 group"
                 onclick={"window.location.href='?sort_by=#{category.name}&sort_dir=#{if @sort_by == category.name && @sort_dir == "desc", do: "asc", else: "desc"}&stat_source=#{@stat_source}&page=1'"}
               >
                 <div class="flex items-center justify-center">
@@ -102,26 +100,13 @@
                 </div>
               </th>
             <% end %>
-            <th scope="col" class="relative px-6 py-3">
-              <span class="sr-only">Actions</span>
-            </th>
+
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
           <%= for player <- @players do %>
             <tr class="hover:bg-gray-50">
-              <td class="px-6 py-4 whitespace-nowrap">
-                <.player_info name={player.name} team={player.team} position={player.position} player_id={player.id} league_id={@league.id} />
-              </td>
-              <td class="px-3 py-4 whitespace-nowrap text-center text-sm text-gray-700">
-                <%= Map.get(player.rank, @stat_source) || "-" %>
-              </td>
-              <%= for category <- @scoring_categories do %>
-                <td class="px-3 py-4 whitespace-nowrap text-center text-sm text-gray-700">
-                  <%= get_in(@player_stats, [player.id, category.name]) || "-" %>
-                </td>
-              <% end %>
-              <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+              <td class="px-6 py-2 whitespace-nowrap text-center text-sm font-medium">
                 <button
                   class="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
                   disabled
@@ -130,6 +115,18 @@
                   Add
                 </button>
               </td>
+              <td class="px-6 py-2 whitespace-nowrap">
+                <.player_info name={player.name} team={player.team} position={player.position} player_id={player.id} season_id={@season.id} position_colors={@position_colors} />
+              </td>
+              <td class="px-3 py-2 whitespace-nowrap text-center text-sm text-gray-700">
+                <%= Map.get(player.rank, @stat_source) || "-" %>
+              </td>
+              <%= for category <- @scoring_categories do %>
+                <td class="px-3 py-2 whitespace-nowrap text-center text-sm text-gray-700">
+                  <%= get_in(@player_stats, [player.id, category.name]) || "-" %>
+                </td>
+              <% end %>
+
             </tr>
           <% end %>
 
@@ -138,7 +135,7 @@
             <tr>
               <td
                 colspan={colspan}
-                class="px-6 py-4 text-center text-sm text-gray-500"
+                class="px-6 py-2 text-center text-sm text-gray-500"
               >
                 No players found.
               </td>

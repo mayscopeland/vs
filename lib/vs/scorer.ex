@@ -11,7 +11,7 @@ defmodule Vs.Scorer do
     field :stats, :map, default: %{}
     field :rank, :map, default: %{}
 
-    belongs_to :universe, Vs.Universe
+    belongs_to :league, Vs.League
     has_many :observations, Vs.Observation
 
     timestamps()
@@ -26,11 +26,11 @@ defmodule Vs.Scorer do
       :position,
       :contest_type,
       :external_id,
-      :universe_id,
+      :league_id,
       :stats,
       :rank
     ])
-    |> validate_required([:name, :contest_type, :universe_id])
-    |> foreign_key_constraint(:universe_id)
+    |> validate_required([:name, :contest_type, :league_id])
+    |> foreign_key_constraint(:league_id)
   end
 end

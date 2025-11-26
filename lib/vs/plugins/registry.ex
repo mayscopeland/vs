@@ -187,7 +187,8 @@ defmodule Vs.Plugins.Registry do
         name: position["name"],
         display_name: position["display_name"],
         # Default to "Roster" if not specified
-        group: position["group"] || "Roster"
+        group: position["group"] || "Roster",
+        color: position["color"]
       }
     end)
   end

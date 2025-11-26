@@ -8,7 +8,7 @@ defmodule Vs.Period do
     field :end_date, :date
     field :is_playoff, :boolean, default: false
 
-    belongs_to :league, Vs.League
+    belongs_to :season, Vs.Season
 
     has_many :rosters, Vs.Roster
 
@@ -18,8 +18,8 @@ defmodule Vs.Period do
   @doc false
   def changeset(period, attrs) do
     period
-    |> cast(attrs, [:sequence, :start_date, :end_date, :is_playoff, :league_id])
-    |> validate_required([:sequence, :start_date, :end_date, :league_id])
-    |> foreign_key_constraint(:league_id)
+    |> cast(attrs, [:sequence, :start_date, :end_date, :is_playoff, :season_id])
+    |> validate_required([:sequence, :start_date, :end_date, :season_id])
+    |> foreign_key_constraint(:season_id)
   end
 end

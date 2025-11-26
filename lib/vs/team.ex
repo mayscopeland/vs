@@ -7,7 +7,7 @@ defmodule Vs.Team do
     field :color_scheme_id, :string
     field :font_style, :string
 
-    belongs_to :league, Vs.League
+    belongs_to :season, Vs.Season
 
     has_many :rosters, Vs.Roster
     has_many :managers, Vs.Manager
@@ -18,8 +18,8 @@ defmodule Vs.Team do
   @doc false
   def changeset(team, attrs) do
     team
-    |> cast(attrs, [:name, :league_id, :color_scheme_id, :font_style])
-    |> validate_required([:name, :league_id])
-    |> foreign_key_constraint(:league_id)
+    |> cast(attrs, [:name, :season_id, :color_scheme_id, :font_style])
+    |> validate_required([:name, :season_id])
+    |> foreign_key_constraint(:season_id)
   end
 end

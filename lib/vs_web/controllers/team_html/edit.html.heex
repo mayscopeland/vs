@@ -3,7 +3,7 @@
   <div class="mb-8">
     <h1 class="text-3xl font-bold text-gray-900">Edit Team</h1>
     <p class="mt-2 text-sm text-gray-600">
-      <%= @team.name %> · <%= @league.name %>
+      <%= @team.name %> · <%= @season.name %>
     </p>
   </div>
 
@@ -16,7 +16,7 @@
         Team Details
       </h3>
 
-      <.form :let={f} for={@changeset} action={~p"/leagues/#{@league.id}/teams/#{@team.id}"} method="put">
+      <.form :let={f} for={@changeset} action={~p"/leagues/#{@season.id}/teams/#{@team.id}"} method="put">
         <div class="mb-4">
           <label for={f[:name].id} class="block text-sm font-medium text-gray-700">Name</label>
           <input

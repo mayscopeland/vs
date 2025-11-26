@@ -1,36 +1,36 @@
 defmodule VsWeb.TeamController do
   use VsWeb, :controller
 
-  alias Vs.{Leagues, Teams}
+  alias Vs.{Seasons, Teams}
 
-  def redirect_to_team(conn, %{"league_id" => league_id}) do
-    # Get first team in the league (later will redirect to user's team)
-    teams = Teams.list_teams_for_league(league_id)
+  def redirect_to_team(conn, %{"season_id" => season_id}) do
+    # Get first team in the season (later will redirect to user's team)
+    teams = Teams.list_teams_for_season(season_id)
 
     case teams do
       [team | _] ->
-        redirect(conn, to: ~p"/leagues/#{league_id}/teams/#{team.id}")
+        redirect(conn, to: ~p"/leagues/#{season_id}/teams/#{team.id}")
 
       [] ->
         conn
         |> put_flash(:error, "No teams found in this league")
-        |> redirect(to: ~p"/leagues/#{league_id}")
+        |> redirect(to: ~p"/leagues/#{season_id}")
     end
   end
 
-  def show(conn, %{"league_id" => league_id, "id" => team_id}) do
-    league = Leagues.get_league!(league_id)
+  def show(conn, %{"season_id" => season_id, "id" => team_id}) do
+    season = Seasons.get_season!(season_id)
     team = Teams.get_team!(team_id)
-    all_teams = Teams.list_teams_for_league(league_id)
+    all_teams = Teams.list_teams_for_season(season_id)
 
     # Get all periods for navigation
-    periods = Teams.list_periods_for_league(league_id)
+    periods = Teams.list_periods_for_season(season_id)
 
     # Determine selected period
     selected_period =
       case Map.get(conn.params, "period") do
         nil ->
-          Teams.current_period_for_league(league_id) || List.first(periods)
+          Teams.current_period_for_season(season_id) || List.first(periods)
 
         seq ->
           sequence = String.to_integer(seq)
@@ -57,17 +57,25 @@ defmodule VsWeb.TeamController do
       end
 
     # Get roster positions for league
-    roster_positions = Leagues.get_active_roster_positions(league)
+    roster_positions = Seasons.get_active_roster_positions(season)
 
     # Build position groups structure
-    position_groups = Teams.build_position_groups(roster_positions, roster, league)
+    position_groups = Teams.build_position_groups(roster_positions, roster, season)
+
+    # Get position colors from plugin config
+    plugin_config =
+      Vs.Plugins.Registry.get_plugin_config!(season.league.contest_type, season.season_year)
+
+    position_colors =
+      plugin_config.available_positions
+      |> Map.new(fn p -> {p.name, p.color} end)
 
     # Get scoring categories (will implement later when showing scores)
     # scoring_categories = Leagues.list_scoring_categories_for_league(league_id)
 
     render(conn, :show,
-      page_title: "#{league.name} - #{team.name}",
-      league: league,
+      page_title: "#{season.name} - #{team.name}",
+      season: season,
       team: team,
       all_teams: all_teams,
       periods: periods,
@@ -76,17 +84,18 @@ defmodule VsWeb.TeamController do
       prev_period: prev_period,
       next_period: next_period,
       roster: roster,
-      position_groups: position_groups
+      position_groups: position_groups,
+      position_colors: position_colors
     )
   end
 
-  def edit(conn, %{"league_id" => league_id, "id" => team_id}) do
-    league = Leagues.get_league!(league_id)
+  def edit(conn, %{"season_id" => season_id, "id" => team_id}) do
+    season = Seasons.get_season!(season_id)
     team = Teams.get_team!(team_id)
     changeset = Teams.change_team(team)
 
     # Get current period
-    current_period = Teams.current_period_for_league(league_id)
+    current_period = Teams.current_period_for_season(season_id)
 
     # Get roster for current period
     roster =
@@ -100,7 +109,7 @@ defmodule VsWeb.TeamController do
     font_styles = Vs.Team.FontStyles.all()
 
     render(conn, :edit,
-      league: league,
+      season: season,
       team: team,
       current_period: current_period,
       roster: roster,
@@ -110,18 +119,18 @@ defmodule VsWeb.TeamController do
     )
   end
 
-  def update(conn, %{"league_id" => league_id, "id" => team_id, "team" => team_params}) do
+  def update(conn, %{"season_id" => season_id, "id" => team_id, "team" => team_params}) do
     team = Teams.get_team!(team_id)
 
     case Teams.update_team(team, team_params) do
       {:ok, _team} ->
         conn
         |> put_flash(:info, "Team updated successfully!")
-        |> redirect(to: ~p"/leagues/#{league_id}/teams/#{team_id}")
+        |> redirect(to: ~p"/leagues/#{season_id}/teams/#{team_id}")
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        league = Leagues.get_league!(league_id)
-        current_period = Teams.current_period_for_league(league_id)
+        season = Seasons.get_season!(season_id)
+        current_period = Teams.current_period_for_season(season_id)
 
         roster =
           if current_period do
@@ -134,7 +143,7 @@ defmodule VsWeb.TeamController do
         font_styles = Vs.Team.FontStyles.all()
 
         render(conn, :edit,
-          league: league,
+          season: season,
           team: team,
           current_period: current_period,
           roster: roster,

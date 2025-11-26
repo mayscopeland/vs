@@ -8,7 +8,7 @@ defmodule VsWeb.Router do
     plug :put_root_layout, html: {VsWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
-    plug VsWeb.Plugs.LeagueContext
+    plug VsWeb.Plugs.SeasonContext
   end
 
   pipeline :api do
@@ -20,21 +20,21 @@ defmodule VsWeb.Router do
 
     get "/", PageController, :home
 
-    # League routes
-    get "/leagues/add", LeagueController, :new
-    post "/leagues/add", LeagueController, :create
-    get "/leagues/:id", LeagueController, :show
+    # Season routes
+    get "/leagues/add", SeasonController, :new
+    post "/leagues/add", SeasonController, :create
+    get "/leagues/:id", SeasonController, :show
 
     # Team routes
-    get "/leagues/:league_id/teams/", TeamController, :redirect_to_team
-    get "/leagues/:league_id/teams/:id", TeamController, :show
-    get "/leagues/:league_id/teams/:id/edit", TeamController, :edit
-    put "/leagues/:league_id/teams/:id", TeamController, :update
-    patch "/leagues/:league_id/teams/:id", TeamController, :update
+    get "/leagues/:season_id/teams/", TeamController, :redirect_to_team
+    get "/leagues/:season_id/teams/:id", TeamController, :show
+    get "/leagues/:season_id/teams/:id/edit", TeamController, :edit
+    put "/leagues/:season_id/teams/:id", TeamController, :update
+    patch "/leagues/:season_id/teams/:id", TeamController, :update
 
     # Player routes
-    get "/leagues/:league_id/players", PlayerController, :list
-    get "/leagues/:league_id/players/:id", PlayerController, :show
+    get "/leagues/:season_id/players", PlayerController, :list
+    get "/leagues/:season_id/players/:id", PlayerController, :show
   end
 
   # Other scopes may use custom stacks.

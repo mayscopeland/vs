@@ -3,16 +3,10 @@ defmodule Vs.League do
   import Ecto.Changeset
 
   schema "leagues" do
-    field :season_year, :integer
-    field :name, :string
-    field :scoring_type, :string
-    field :scoring_settings, :map
-    field :roster_settings, :map
+    field :contest_type, :string
 
-    belongs_to :universe, Vs.Universe
-
-    has_many :teams, Vs.Team
-    has_many :periods, Vs.Period
+    has_many :seasons, Vs.Season
+    has_many :scorers, Vs.Scorer
 
     timestamps()
   end
@@ -20,15 +14,7 @@ defmodule Vs.League do
   @doc false
   def changeset(league, attrs) do
     league
-    |> cast(attrs, [
-      :season_year,
-      :name,
-      :universe_id,
-      :scoring_settings,
-      :roster_settings,
-      :scoring_type
-    ])
-    |> validate_required([:season_year, :name, :universe_id])
-    |> foreign_key_constraint(:universe_id)
+    |> cast(attrs, [:contest_type])
+    |> validate_required([:contest_type])
   end
 end

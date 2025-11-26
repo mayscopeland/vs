@@ -19,11 +19,11 @@
     <table class="min-w-full divide-y divide-gray-200">
       <thead class="bg-gray-50">
         <tr>
-          <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sticky left-0 bg-gray-50">
+          <th scope="col" class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sticky left-0 bg-gray-50">
             Season
           </th>
           <%= for category <- @scoring_categories do %>
-            <th scope="col" class="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th scope="col" class="px-3 py-2 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
               <%= category.name %>
             </th>
           <% end %>
@@ -32,11 +32,11 @@
       <tbody class="bg-white divide-y divide-gray-200">
         <%= for {label, _source_key, stats} <- @stats_by_year do %>
           <tr>
-            <td class="px-3 py-3 whitespace-nowrap text-sm font-medium text-gray-900 sticky left-0 bg-white">
+            <td class="px-3 py-2 whitespace-nowrap text-sm font-medium text-gray-900 sticky left-0 bg-white">
               <%= label %>
             </td>
             <%= for category <- @scoring_categories do %>
-              <td class="px-3 py-3 whitespace-nowrap text-sm text-gray-700 text-right">
+              <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-700 text-right">
                 <%= Map.get(stats, category.name) || "-" %>
               </td>
             <% end %>

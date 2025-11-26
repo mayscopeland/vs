@@ -15,15 +15,15 @@ defmodule Vs.Teams do
   def get_team!(id) do
     Team
     |> Repo.get!(id)
-    |> Repo.preload([:league, managers: :user])
+    |> Repo.preload([:season, managers: :user])
   end
 
   @doc """
-  Returns all teams for a league with managers and users preloaded.
+  Returns all teams for a season with managers and users preloaded.
   """
-  def list_teams_for_league(league_id) do
+  def list_teams_for_season(season_id) do
     Team
-    |> where([t], t.league_id == ^league_id)
+    |> where([t], t.season_id == ^season_id)
     |> order_by([t], asc: t.name)
     |> Repo.all()
     |> Repo.preload(managers: :user)
@@ -34,7 +34,7 @@ defmodule Vs.Teams do
 
   ## Examples
 
-      iex> create_team(%{name: "Team Name", league_id: 1})
+      iex> create_team(%{name: "Team Name", season_id: 1})
       {:ok, %Team{}}
 
       iex> create_team(%{name: nil})
@@ -77,28 +77,28 @@ defmodule Vs.Teams do
   end
 
   @doc """
-  Returns all periods for a league ordered by sequence.
+  Returns all periods for a season ordered by sequence.
   """
-  def list_periods_for_league(league_id) do
+  def list_periods_for_season(season_id) do
     Period
-    |> where([p], p.league_id == ^league_id)
+    |> where([p], p.season_id == ^season_id)
     |> order_by([p], asc: p.sequence)
     |> Repo.all()
   end
 
   @doc """
-  Determines the current active period for a league based on today's date.
+  Determines the current active period for a season based on today's date.
 
   Returns the period that contains today's date, or the most recent period if none contains today.
-  Returns nil if the league has no periods.
+  Returns nil if the season has no periods.
   """
-  def current_period_for_league(league_id) do
+  def current_period_for_season(season_id) do
     today = Date.utc_today()
 
     # Try to find a period that contains today's date
     period =
       Period
-      |> where([p], p.league_id == ^league_id)
+      |> where([p], p.season_id == ^season_id)
       |> where([p], p.start_date <= ^today and p.end_date >= ^today)
       |> order_by([p], asc: p.sequence)
       |> limit(1)
@@ -108,7 +108,7 @@ defmodule Vs.Teams do
     case period do
       nil ->
         Period
-        |> where([p], p.league_id == ^league_id)
+        |> where([p], p.season_id == ^season_id)
         |> order_by([p], desc: p.sequence)
         |> limit(1)
         |> Repo.one()
@@ -164,7 +164,7 @@ defmodule Vs.Teams do
   ]
   ```
   """
-  def build_position_groups(roster_positions, roster, _league) do
+  def build_position_groups(roster_positions, roster, _season) do
     # Get all scorer IDs from roster slots
     {scorer_ids, slots_map} =
       case roster do

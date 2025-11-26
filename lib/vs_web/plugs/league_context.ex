@@ -12,6 +12,6 @@ defmodule VsWeb.Plugs.LeagueContext do
     all_leagues = Leagues.list_leagues()
 
     # Assign to conn for use in templates
-    assign(conn, :user_leagues, all_leagues)
+    assign(conn, :user_seasons, all_leagues)
   end
 end

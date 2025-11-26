@@ -1,24 +1,24 @@
 defmodule VsWeb.PlayerController do
   use VsWeb, :controller
 
-  alias Vs.{Leagues, Players}
+  alias Vs.{Seasons, Players}
   alias Vs.Stats.Formatter
 
-  def list(conn, %{"league_id" => league_id} = params) do
-    league =
-      league_id
-      |> Leagues.get_league!()
+  def list(conn, %{"season_id" => season_id} = params) do
+    season =
+      season_id
+      |> Seasons.get_season!()
 
-    scoring_categories = Leagues.get_active_scoring_categories(league)
+    scoring_categories = Seasons.get_active_scoring_categories(season)
 
     page = Map.get(params, "page", "1") |> String.to_integer()
     per_page = 50
-    stat_source = Map.get(params, "stat_source", to_string(league.season_year))
+    stat_source = Map.get(params, "stat_source", to_string(season.season_year))
     sort_by = Map.get(params, "sort_by", "rank")
     sort_dir = Map.get(params, "sort_dir", "asc")
 
     {players, total_count} =
-      Players.list_available_players(league_id,
+      Players.list_available_players(season_id,
         page: page,
         per_page: per_page,
         sort_by: sort_by,
@@ -57,7 +57,7 @@ defmodule VsWeb.PlayerController do
       |> Map.new()
 
     # Generate options for the dropdown
-    current_year = league.season_year
+    current_year = season.season_year
 
     stat_source_options = [
       {"#{current_year} Stats", to_string(current_year)},
@@ -67,28 +67,37 @@ defmodule VsWeb.PlayerController do
       {"#{current_year - 3} Stats", to_string(current_year - 3)}
     ]
 
+    # Get position colors from plugin config
+    plugin_config =
+      Vs.Plugins.Registry.get_plugin_config!(season.league.contest_type, season.season_year)
+
+    position_colors =
+      plugin_config.available_positions
+      |> Map.new(fn p -> {p.name, p.color} end)
+
     render(conn, :list,
-      league: league,
+      season: season,
       players: players,
       scoring_categories: scoring_categories,
       player_stats: enhanced_stats,
-      page_title: "#{league.name} - Players",
+      page_title: "#{season.name} - Players",
       page: page,
       total_pages: total_pages,
       stat_source: stat_source,
       stat_source_options: stat_source_options,
       sort_by: sort_by,
-      sort_dir: sort_dir
+      sort_dir: sort_dir,
+      position_colors: position_colors
     )
   end
 
-  def show(conn, %{"league_id" => league_id, "id" => player_id} = _params) do
-    league = Leagues.get_league!(league_id)
+  def show(conn, %{"season_id" => season_id, "id" => player_id} = _params) do
+    season = Seasons.get_season!(season_id)
     player = Players.get_scorer!(player_id)
-    scoring_categories = Leagues.get_active_scoring_categories(league)
+    scoring_categories = Seasons.get_active_scoring_categories(season)
 
     # Generate stat source options (same labels as player list dropdown)
-    current_year = league.season_year
+    current_year = season.season_year
 
     stat_source_options = [
       {"#{current_year} Stats", to_string(current_year)},
@@ -130,7 +139,7 @@ defmodule VsWeb.PlayerController do
       end)
 
     render(conn, :show,
-      league: league,
+      season: season,
       player: player,
       scoring_categories: scoring_categories,
       stats_by_year: stats_by_year,

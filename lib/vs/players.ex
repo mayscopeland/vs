@@ -5,24 +5,24 @@ defmodule Vs.Players do
 
   import Ecto.Query, warn: false
   alias Vs.Repo
-  alias Vs.{Scorer, League}
+  alias Vs.{Scorer, Season}
 
   @doc """
-  Returns all scorers/players that are not rostered in a specific league.
+  Returns all scorers/players that are not rostered in a specific season.
 
-  This finds all scorers for the league's universe that are not
-  currently on any team's roster in the league.
+  This finds all scorers for the season's league that are not
+  currently on any team's roster in the season.
   """
-  def list_available_players(league_id, opts \\ []) do
-    league = Repo.get!(League, league_id) |> Repo.preload(:universe)
+  def list_available_players(season_id, opts \\ []) do
+    season = Repo.get!(Season, season_id) |> Repo.preload(:league)
     page = Keyword.get(opts, :page, 1)
     per_page = Keyword.get(opts, :per_page, 50)
 
-    # Get all scorer IDs that are rostered in this league
+    # Get all scorer IDs that are rostered in this season
     rostered_scorer_ids =
       from(r in Vs.Roster,
         join: t in assoc(r, :team),
-        where: t.league_id == ^league_id,
+        where: t.season_id == ^season_id,
         select: r.slots
       )
       |> Repo.all()
@@ -33,14 +33,14 @@ defmodule Vs.Players do
     # Base query for available scorers
     query =
       Scorer
-      |> where([s], s.universe_id == ^league.universe.id)
+      |> where([s], s.league_id == ^season.league.id)
       |> where([s], s.id not in ^rostered_scorer_ids)
 
     # Fetch ALL matching scorers
     all_players = Repo.all(query)
 
     # Get active scoring categories for formulas
-    scoring_categories = Vs.Leagues.get_active_scoring_categories(league)
+    scoring_categories = Vs.Seasons.get_active_scoring_categories(season)
     stat_source = Keyword.get(opts, :stat_source)
 
     # Process players: extract stats, calculate derived stats, and populate struct
@@ -130,13 +130,13 @@ defmodule Vs.Players do
   end
 
   @doc """
-  Checks if players have been loaded for a specific universe.
+  Checks if players have been loaded for a specific league.
 
-  Returns true if at least one scorer exists for the universe.
+  Returns true if at least one scorer exists for the league.
   """
-  def players_loaded_for_universe?(universe_id) do
+  def players_loaded_for_league?(league_id) do
     Scorer
-    |> where([s], s.universe_id == ^universe_id)
+    |> where([s], s.league_id == ^league_id)
     |> limit(1)
     |> Repo.one()
     |> case do
@@ -145,9 +145,9 @@ defmodule Vs.Players do
     end
   end
 
-  def list_players_for_universe(universe_id) do
+  def list_players_for_league(league_id) do
     Scorer
-    |> where([s], s.universe_id == ^universe_id)
+    |> where([s], s.league_id == ^league_id)
     |> Repo.all()
   end
 

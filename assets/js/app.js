@@ -45,10 +45,10 @@ window.liveSocket = liveSocket
 // Player Modal Functions - using event delegation for reliability
 function openPlayerModal(button) {
   const playerId = button.dataset.playerId
-  const leagueId = button.dataset.leagueId
+  const seasonId = button.dataset.seasonId
 
-  if (!playerId || !leagueId) {
-    console.error('Missing player_id or league_id')
+  if (!playerId || !seasonId) {
+    console.error('Missing player_id or season_id')
     return
   }
 
@@ -89,7 +89,7 @@ function openPlayerModal(button) {
   const statSource = urlParams.get('stat_source') || ''
 
   // Build URL with stat_source if present
-  let url = `/leagues/${leagueId}/players/${playerId}`
+  let url = `/leagues/${seasonId}/players/${playerId}`
   if (statSource) {
     url += `?stat_source=${statSource}`
   }

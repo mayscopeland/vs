@@ -18,12 +18,12 @@
       Create League
     </a>
 
-    <%= if assigns[:user_leagues] && length(@user_leagues) > 0 do %>
+    <%= if assigns[:user_seasons] && length(@user_seasons) > 0 do %>
       <div class="w-full max-w-md mt-8">
         <h2 class="text-lg font-medium text-gray-900 mb-4">Your Leagues</h2>
         <div class="bg-white shadow overflow-hidden sm:rounded-md">
           <ul role="list" class="divide-y divide-gray-200">
-            <%= for league <- @user_leagues do %>
+            <%= for league <- @user_seasons do %>
               <li>
                 <a href={~p"/leagues/#{league.id}"} class="block hover:bg-gray-50">
                   <div class="px-4 py-4 sm:px-6 flex items-center justify-between">

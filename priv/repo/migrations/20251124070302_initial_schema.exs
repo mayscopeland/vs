@@ -2,7 +2,7 @@ defmodule Vs.Repo.Migrations.InitialSchema do
   use Ecto.Migration
 
   def change do
-    create table(:universes) do
+    create table(:leagues) do
       add :contest_type, :string, null: false
       timestamps()
     end
@@ -15,16 +15,16 @@ defmodule Vs.Repo.Migrations.InitialSchema do
 
     create unique_index(:users, [:email])
 
-    create table(:leagues) do
+    create table(:seasons) do
       add :season_year, :integer, null: false
       add :name, :string, null: false
       add :scoring_settings, :map
       add :roster_settings, :map
-      add :universe_id, references(:universes, on_delete: :nothing), null: false
+      add :league_id, references(:leagues, on_delete: :nothing), null: false
       timestamps()
     end
 
-    create index(:leagues, [:universe_id])
+    create index(:seasons, [:league_id])
 
     create table(:scorers) do
       add :name, :string, null: false
@@ -33,11 +33,11 @@ defmodule Vs.Repo.Migrations.InitialSchema do
       add :contest_type, :string, null: false
       add :external_id, :string
       add :stats, :map, default: %{}
-      add :universe_id, references(:universes, on_delete: :nothing), null: false
+      add :league_id, references(:leagues, on_delete: :nothing), null: false
       timestamps()
     end
 
-    create index(:scorers, [:universe_id])
+    create index(:scorers, [:league_id])
 
     create table(:periods) do
       add :name, :string, null: false
@@ -45,21 +45,21 @@ defmodule Vs.Repo.Migrations.InitialSchema do
       add :start_date, :date, null: false
       add :end_date, :date, null: false
       add :is_playoff, :boolean, default: false, null: false
-      add :league_id, references(:leagues, on_delete: :nothing), null: false
+      add :season_id, references(:seasons, on_delete: :nothing), null: false
       timestamps()
     end
 
-    create index(:periods, [:league_id])
+    create index(:periods, [:season_id])
 
     create table(:teams) do
       add :name, :string, null: false
       add :color_scheme_id, :string
       add :font_style, :string
-      add :league_id, references(:leagues, on_delete: :nothing), null: false
+      add :season_id, references(:seasons, on_delete: :nothing), null: false
       timestamps()
     end
 
-    create index(:teams, [:league_id])
+    create index(:teams, [:season_id])
 
     create table(:managers) do
       add :is_commissioner, :boolean, default: false, null: false

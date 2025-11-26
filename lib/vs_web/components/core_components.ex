@@ -477,8 +477,8 @@ defmodule VsWeb.CoreComponents do
       <table class="w-[40rem] mt-11 sm:w-full">
         <thead class="text-sm text-left leading-6 text-gray-500">
           <tr>
-            <th :for={col <- @col} class="p-0 pb-4 pr-6 font-normal">{col[:label]}</th>
-            <th :if={@action != []} class="relative p-0 pb-4">
+            <th :for={col <- @col} class="p-0 pb-2 pr-6 font-normal">{col[:label]}</th>
+            <th :if={@action != []} class="relative p-0 pb-2">
               <span class="sr-only">{gettext("Actions")}</span>
             </th>
           </tr>
@@ -494,7 +494,7 @@ defmodule VsWeb.CoreComponents do
               phx-click={@row_click && @row_click.(row)}
               class={["relative p-0", @row_click && "hover:cursor-pointer"]}
             >
-              <div class="block py-4 pr-6">
+              <div class="block py-2 pr-6">
                 <span class="absolute -inset-y-px right-0 -left-4 group-hover:bg-gray-50 sm:rounded-l-xl" />
                 <span class={["relative", i == 0 && "font-semibold text-gray-900"]}>
                   {render_slot(col, @row_item.(row))}
@@ -502,7 +502,7 @@ defmodule VsWeb.CoreComponents do
               </div>
             </td>
             <td :if={@action != []} class="relative w-14 p-0">
-              <div class="relative whitespace-nowrap py-4 text-right text-sm font-medium">
+              <div class="relative whitespace-nowrap py-2 text-right text-sm font-medium">
                 <span class="absolute -inset-y-px -right-4 left-0 group-hover:bg-gray-50 sm:rounded-r-xl" />
                 <span
                   :for={action <- @action}
@@ -575,14 +575,15 @@ defmodule VsWeb.CoreComponents do
 
   ## Examples
 
-      <.player_info name="John Doe" team="LAL" position="PG-SG" player_id={123} league_id={456} />
+      <.player_info name="John Doe" team="LAL" position="PG-SG" player_id={123} season_id={456} />
       <.player_info name="Jane Smith" team="BOS" position="C" />
   """
   attr :name, :string, required: true
   attr :team, :string, default: nil
   attr :position, :string, default: nil
   attr :player_id, :integer, default: nil
-  attr :league_id, :integer, default: nil
+  attr :season_id, :integer, default: nil
+  attr :position_colors, :map, default: %{}
 
   def player_info(assigns) do
     positions = if assigns.position, do: String.split(assigns.position, "-"), else: []
@@ -590,12 +591,12 @@ defmodule VsWeb.CoreComponents do
 
     ~H"""
     <div class="flex items-center gap-1">
-      <%= if @player_id && @league_id do %>
+      <%= if @player_id && @season_id do %>
         <button
           type="button"
           class="player-modal-trigger text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline cursor-pointer"
           data-player-id={@player_id}
-          data-league-id={@league_id}
+          data-season-id={@season_id}
         >
           <%= @name %>
         </button>
@@ -608,13 +609,39 @@ defmodule VsWeb.CoreComponents do
         <%= @team || "N/A" %>
       </span>
       <%= for position <- @positions do %>
-        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-          <%= position %>
-        </span>
+        <.position_badge position={position} color_map={@position_colors} />
       <% end %>
     </div>
     """
   end
+
+  @doc """
+  Renders a position badge with appropriate coloring.
+  """
+  attr :position, :string, required: true
+  attr :color_map, :map, default: %{}
+  attr :class, :string, default: nil
+
+  def position_badge(assigns) do
+    color_name = Map.get(assigns.color_map, assigns.position, "gray")
+    color_class = position_color_class(color_name)
+
+    assigns = assign(assigns, :color_class, color_class)
+
+    ~H"""
+    <span class={["inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium", @color_class, @class]}>
+      <%= @position %>
+    </span>
+    """
+  end
+
+  defp position_color_class("blue"), do: "bg-blue-100 text-blue-800"
+  defp position_color_class("green"), do: "bg-green-100 text-green-800"
+  defp position_color_class("yellow"), do: "bg-yellow-100 text-yellow-800"
+  defp position_color_class("orange"), do: "bg-orange-100 text-orange-800"
+  defp position_color_class("red"), do: "bg-red-100 text-red-800"
+  defp position_color_class("white"), do: "bg-gray-100 text-gray-800"
+  defp position_color_class(_), do: "bg-gray-100 text-gray-800"
 
   @doc """
   Renders a [Heroicon](https://heroicons.com).

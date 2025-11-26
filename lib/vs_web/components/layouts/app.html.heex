@@ -10,11 +10,11 @@
         </div>
         <div class="mt-5 flex-1 flex flex-col">
           <nav class="flex-1 px-2 space-y-1">
-            <%= if assigns[:user_leagues] && length(@user_leagues) > 0 do %>
+            <%= if assigns[:user_seasons] && length(@user_seasons) > 0 do %>
               <!-- League Selector -->
               <div class="mb-4">
                 <label class="block text-xs font-medium text-gray-600 uppercase tracking-wider px-3 mb-2">
-                  Select League
+                  Select league
                 </label>
                 <select
                   id="league-selector"
@@ -22,21 +22,21 @@
                   onchange="window.location.href = this.value"
                 >
                   <option value="">Choose a league...</option>
-                  <%= for league <- @user_leagues do %>
+                  <%= for season <- @user_seasons do %>
                     <option
-                      value={~p"/leagues/#{league.id}"}
-                      selected={assigns[:league] && @league.id == league.id}
+                      value={~p"/leagues/#{season.id}"}
+                      selected={assigns[:season] && @season.id == season.id}
                     >
-                      <%= league.name %>
+                      <%= season.name %>
                     </option>
                   <% end %>
                 </select>
               </div>
 
-              <%= if assigns[:league] do %>
+              <%= if assigns[:season] do %>
                 <!-- League Navigation -->
                 <a
-                  href={~p"/leagues/#{@league.id}"}
+                  href={~p"/leagues/#{@season.id}"}
                   class="text-gray-700 hover:bg-gray-100 hover:text-gray-900 group flex items-center px-3 py-2 text-sm font-medium rounded-md"
                 >
                   <svg
@@ -55,7 +55,7 @@
                   League
                 </a>
                 <a
-                  href={~p"/leagues/#{@league.id}/teams/"}
+                  href={~p"/leagues/#{@season.id}/teams/"}
                   class="text-gray-700 hover:bg-gray-100 hover:text-gray-900 group flex items-center px-3 py-2 text-sm font-medium rounded-md"
                 >
                   <svg
@@ -74,7 +74,7 @@
                   Teams
                 </a>
                 <a
-                  href={~p"/leagues/#{@league.id}/players"}
+                  href={~p"/leagues/#{@season.id}/players"}
                   class="text-gray-700 hover:bg-gray-100 hover:text-gray-900 group flex items-center px-3 py-2 text-sm font-medium rounded-md"
                 >
                   <svg
@@ -116,7 +116,7 @@
                   d="M12 4v16m8-8H4"
                 />
               </svg>
-              Create League
+              Create league
             </a>
           </nav>
         </div>
@@ -143,7 +143,7 @@
     <!-- Mobile Navbar -->
     <div class="md:hidden bg-white border-b border-gray-200 flex flex-col">
       <!-- Row 1: League Selector -->
-      <%= if assigns[:user_leagues] && length(@user_leagues) > 0 do %>
+      <%= if assigns[:user_seasons] && length(@user_seasons) > 0 do %>
         <div class="flex justify-center py-1">
           <select
             id="mobile-league-selector"
@@ -151,43 +151,43 @@
             onchange="window.location.href = this.value"
           >
             <option value="">Choose a league...</option>
-            <%= for league <- @user_leagues do %>
+            <%= for season <- @user_seasons do %>
               <option
-                value={~p"/leagues/#{league.id}"}
-                selected={assigns[:league] && @league.id == league.id}
+                value={~p"/leagues/#{season.id}"}
+                selected={assigns[:season] && @season.id == season.id}
               >
-                <%= league.name %>
+                <%= season.name %>
               </option>
             <% end %>
           </select>
         </div>
 
         <!-- Row 2: Nav Links -->
-        <%= if assigns[:league] do %>
+        <%= if assigns[:season] do %>
           <div class="flex w-full">
             <a
-              href={~p"/leagues/#{@league.id}"}
+              href={~p"/leagues/#{@season.id}"}
               class={[
                 "flex-1 text-center py-2 text-sm font-medium border-b-2",
-                if(@conn.request_path == ~p"/leagues/#{@league.id}", do: "border-gray-900 text-gray-900", else: "border-transparent text-gray-500 hover:text-gray-700")
+                if(@conn.request_path == ~p"/leagues/#{@season.id}", do: "border-gray-900 text-gray-900", else: "border-transparent text-gray-500 hover:text-gray-700")
               ]}
             >
               League
             </a>
             <a
-              href={~p"/leagues/#{@league.id}/teams/"}
+              href={~p"/leagues/#{@season.id}/teams/"}
               class={[
                 "flex-1 text-center py-2 text-sm font-medium border-b-2",
-                if(String.starts_with?(@conn.request_path, ~p"/leagues/#{@league.id}/teams"), do: "border-gray-900 text-gray-900", else: "border-transparent text-gray-500 hover:text-gray-700")
+                if(String.starts_with?(@conn.request_path, ~p"/leagues/#{@season.id}/teams"), do: "border-gray-900 text-gray-900", else: "border-transparent text-gray-500 hover:text-gray-700")
               ]}
             >
               Teams
             </a>
             <a
-              href={~p"/leagues/#{@league.id}/players"}
+              href={~p"/leagues/#{@season.id}/players"}
               class={[
                 "flex-1 text-center py-2 text-sm font-medium border-b-2",
-                if(String.starts_with?(@conn.request_path, ~p"/leagues/#{@league.id}/players"), do: "border-gray-900 text-gray-900", else: "border-transparent text-gray-500 hover:text-gray-700")
+                if(String.starts_with?(@conn.request_path, ~p"/leagues/#{@season.id}/players"), do: "border-gray-900 text-gray-900", else: "border-transparent text-gray-500 hover:text-gray-700")
               ]}
             >
               Players

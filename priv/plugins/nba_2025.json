@@ -433,62 +433,74 @@
     {
       "name": "PG",
       "display_name": "Point Guard",
-      "group": "Roster"
+      "group": "Roster",
+      "color": "blue"
     },
     {
       "name": "SG",
       "display_name": "Shooting Guard",
-      "group": "Roster"
+      "group": "Roster",
+      "color": "green"
     },
     {
       "name": "SF",
       "display_name": "Small Forward",
-      "group": "Roster"
+      "group": "Roster",
+      "color": "yellow"
     },
     {
       "name": "PF",
       "display_name": "Power Forward",
-      "group": "Roster"
+      "group": "Roster",
+      "color": "orange"
     },
     {
       "name": "C",
       "display_name": "Center",
-      "group": "Roster"
+      "group": "Roster",
+      "color": "red"
     },
     {
       "name": "G",
       "display_name": "Guard",
-      "group": "Roster"
+      "group": "Roster",
+      "color": "white"
     },
     {
       "name": "F",
       "display_name": "Forward",
-      "group": "Roster"
+      "group": "Roster",
+      "color": "white"
     },
     {
       "name": "PF/C",
       "display_name": "Power Forward/Center",
-      "group": "Roster"
+      "group": "Roster",
+      "color": "white"
     },
     {
       "name": "F/C",
       "display_name": "Forward/Center",
-      "group": "Roster"
+      "group": "Roster",
+      "color": "white"
     },
     {
       "name": "G/F",
       "display_name": "Guard/Forward",
-      "group": "Roster"
+      "group": "Roster",
+      "color": "white"
     },
     {
       "name": "UT",
       "display_name": "Utility",
-      "group": "Roster"
+      "group": "Roster",
+      "color": "white"
     },
     {
       "name": "BN",
       "display_name": "Bench",
-      "group": "Roster"
+      "group": "Roster",
+      "color": "white"
     }
   ],
   "position_presets": [

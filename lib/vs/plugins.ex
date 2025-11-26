@@ -21,11 +21,11 @@ defmodule Vs.Plugins do
       iex> load_initial_data("NFL", 2024, 2)
       {:error, :plugin_not_found}
   """
-  def load_initial_data(contest_type, season_year, universe_id) do
+  def load_initial_data(contest_type, season_year, league_id) do
     alias Vs.Plugins.Registry
 
     with {:ok, players} <- Registry.get_plugin_players(contest_type, season_year),
-         {:ok, count} <- insert_scorers(players, contest_type, universe_id) do
+         {:ok, count} <- insert_scorers(players, contest_type, league_id) do
       {:ok, count}
     else
       {:error, reason} -> {:error, reason}
@@ -63,12 +63,12 @@ defmodule Vs.Plugins do
   @doc """
   Fetches observations for a specific date and stores them in the database.
   """
-  def fetch_and_store_observations(contest_type, date, universe_id) do
+  def fetch_and_store_observations(contest_type, date, league_id) do
     with {:ok, module} <- resolve_plugin_module(contest_type),
          {:ok, %{player_stats: player_stats}} <- module.get_observations(date) do
-      # Get all scorers for this universe to map external_id -> id
+      # Get all scorers for this league to map external_id -> id
       scorers_map =
-        from(s in Scorer, where: s.universe_id == ^universe_id, select: {s.external_id, s.id})
+        from(s in Scorer, where: s.league_id == ^league_id, select: {s.external_id, s.id})
         |> Repo.all()
         |> Map.new()
 
@@ -162,16 +162,16 @@ defmodule Vs.Plugins do
   end
 
   # Bulk inserts scorers into the database.
-  # Uses insert_all for efficiency. Skips duplicates based on external_id and universe_id.
-  defp insert_scorers(scorers, contest_type, universe_id) when is_list(scorers) do
+  # Uses insert_all for efficiency. Skips duplicates based on external_id and league_id.
+  defp insert_scorers(scorers, contest_type, league_id) when is_list(scorers) do
     now = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
 
-    # Add timestamps, contest_type, and universe_id to each scorer
+    # Add timestamps, contest_type, and league_id to each scorer
     scorers_with_metadata =
       Enum.map(scorers, fn scorer ->
         scorer
         |> Map.put(:contest_type, contest_type)
-        |> Map.put(:universe_id, universe_id)
+        |> Map.put(:league_id, league_id)
         |> Map.put(:inserted_at, now)
         |> Map.put(:updated_at, now)
       end)
@@ -181,7 +181,7 @@ defmodule Vs.Plugins do
 
     existing_scorers =
       from(s in Scorer,
-        where: s.external_id in ^external_ids and s.universe_id == ^universe_id
+        where: s.external_id in ^external_ids and s.league_id == ^league_id
       )
       |> Repo.all()
       |> Map.new(&{&1.external_id, &1})

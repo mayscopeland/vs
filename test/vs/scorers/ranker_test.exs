@@ -2,17 +2,17 @@ defmodule Vs.Scorers.RankerTest do
   use Vs.DataCase
 
   alias Vs.Scorers.Ranker
-  alias Vs.{Leagues, Scorer}
+  alias Vs.{Seasons, Scorer}
 
   describe "calculate_ranks/1" do
     setup do
-      universe = insert_universe(%{contest_type: "NBA"})
-      league = insert_league(%{universe_id: universe.id, season_year: 2025})
+      league = insert_league(%{contest_type: "NBA"})
+      season = insert_season(%{league_id: league.id, season_year: 2025})
 
       # Create scorers with stats
       scorer1 =
         insert_scorer(%{
-          universe_id: universe.id,
+          league_id: league.id,
           name: "Player A",
           stats: %{
             # 50% FG
@@ -23,7 +23,7 @@ defmodule Vs.Scorers.RankerTest do
 
       scorer2 =
         insert_scorer(%{
-          universe_id: universe.id,
+          league_id: league.id,
           name: "Player B",
           stats: %{
             # 40% FG
@@ -32,10 +32,10 @@ defmodule Vs.Scorers.RankerTest do
           }
         })
 
-      %{league: league, scorers: [scorer1, scorer2]}
+      %{season: season, scorers: [scorer1, scorer2]}
     end
 
-    test "calculates ranks for points league", %{league: league} do
+    test "calculates ranks for points season", %{season: season} do
       # Setup points settings: PTS=1, REB=1, AST=1, TOV=-1
       settings = %{
         "PTS" => 1,
@@ -44,11 +44,11 @@ defmodule Vs.Scorers.RankerTest do
         "TOV" => -1
       }
 
-      {:ok, league} =
-        Leagues.update_league(league, %{scoring_settings: settings, scoring_type: "points"})
+      {:ok, season} =
+        Seasons.update_season(season, %{scoring_settings: settings, scoring_type: "points"})
 
       # Run ranker
-      Ranker.calculate_ranks(league)
+      Ranker.calculate_ranks(season)
 
       # Check ranks
       # Player A: 20 + 10 + 5 - 2 = 33
@@ -66,7 +66,7 @@ defmodule Vs.Scorers.RankerTest do
       assert s2.rank["2024"] == 1
     end
 
-    test "calculates ranks for roto league with rate stats", %{league: league} do
+    test "calculates ranks for roto season with rate stats", %{season: season} do
       # Setup roto settings: PTS, FG%
       # FG% formula is FGM / FGA
       settings = %{
@@ -74,10 +74,10 @@ defmodule Vs.Scorers.RankerTest do
         "FG%" => 1
       }
 
-      {:ok, league} =
-        Leagues.update_league(league, %{scoring_settings: settings, scoring_type: "roto"})
+      {:ok, season} =
+        Seasons.update_season(season, %{scoring_settings: settings, scoring_type: "roto"})
 
-      Ranker.calculate_ranks(league)
+      Ranker.calculate_ranks(season)
 
       s1 = Repo.get_by(Scorer, name: "Player A")
       s2 = Repo.get_by(Scorer, name: "Player B")
@@ -92,18 +92,18 @@ defmodule Vs.Scorers.RankerTest do
   end
 
   # Helpers for inserting data if not available in DataCase
-  defp insert_universe(attrs) do
-    %Vs.Universe{}
-    |> Vs.Universe.changeset(attrs)
+  defp insert_league(attrs) do
+    %Vs.League{}
+    |> Vs.League.changeset(attrs)
     |> Repo.insert!()
   end
 
-  defp insert_league(attrs) do
-    defaults = %{name: "Test League"}
+  defp insert_season(attrs) do
+    defaults = %{name: "Test Season"}
     attrs = Map.merge(defaults, attrs)
 
-    %Vs.League{}
-    |> Vs.League.changeset(attrs)
+    %Vs.Season{}
+    |> Vs.Season.changeset(attrs)
     |> Repo.insert!()
   end
 

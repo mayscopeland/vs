@@ -1,16 +1,16 @@
-defmodule VsWeb.LeagueController do
+defmodule VsWeb.SeasonController do
   use VsWeb, :controller
 
-  alias Vs.{Leagues, Teams, Players, Plugins}
+  alias Vs.{Leagues, Seasons, Teams, Players, Plugins}
   alias Vs.Plugins.Registry
 
   def new(conn, _params) do
     contest_types = Registry.list_available_contest_types()
-    render(conn, :new, contest_types: contest_types, page_title: "Create a VS League")
+    render(conn, :new, contest_types: contest_types, page_title: "Create a VS Season")
   end
 
   def create(conn, %{
-        "league_name" => league_name,
+        "league_name" => season_name,
         "contest_type" => contest_type_with_year,
         "team_count" => team_count
       }) do
@@ -20,12 +20,12 @@ defmodule VsWeb.LeagueController do
     # Get plugin config
     case Registry.get_plugin_config(contest_type, season_year) do
       {:ok, config} ->
-        # Create universe first
-        {:ok, universe} = Leagues.create_universe(%{contest_type: contest_type})
+        # Create league first (if it doesn't exist)
+        {:ok, league} = Leagues.create_league(%{contest_type: contest_type})
 
-        # Load players if not already loaded for this universe
-        unless Players.players_loaded_for_universe?(universe.id) do
-          case Plugins.load_initial_data(contest_type, season_year, universe.id) do
+        # Load players if not already loaded for this league
+        unless Players.players_loaded_for_league?(league.id) do
+          case Plugins.load_initial_data(contest_type, season_year, league.id) do
             {:ok, _count} ->
               :ok
 
@@ -37,15 +37,15 @@ defmodule VsWeb.LeagueController do
           end
         end
 
-        {:ok, league} =
-          Leagues.create_league(%{
-            universe_id: universe.id,
+        {:ok, season} =
+          Seasons.create_season(%{
+            league_id: league.id,
             season_year: season_year,
-            name: league_name
+            name: season_name
           })
 
         # Setup defaults from plugin config
-        {:ok, league} = Leagues.setup_league_defaults(league, config)
+        {:ok, season} = Seasons.setup_season_defaults(season, config)
 
         # Create teams with random place + mascot names
         team_count_int = String.to_integer(team_count)
@@ -56,14 +56,14 @@ defmodule VsWeb.LeagueController do
           font_style = Vs.Team.FontStyles.random()
 
           Teams.create_team(%{
-            league_id: league.id,
+            season_id: season.id,
             name: name,
             color_scheme_id: scheme.id,
             font_style: font_style.id
           })
         end)
 
-        # Redirect to league page
+        # Redirect to initial season page for league
         conn
         |> put_flash(:info, "League created successfully!")
         |> redirect(to: ~p"/leagues/#{league.id}")
@@ -75,11 +75,11 @@ defmodule VsWeb.LeagueController do
     end
   end
 
-  def show(conn, %{"id" => league_id}) do
-    league = Leagues.get_league!(league_id)
-    teams = Teams.list_teams_for_league(league_id)
+  def show(conn, %{"id" => season_id}) do
+    season = Seasons.get_season!(season_id)
+    teams = Teams.list_teams_for_season(season_id)
 
-    render(conn, :show, league: league, teams: teams, page_title: league.name)
+    render(conn, :show, season: season, teams: teams, page_title: season.name)
   end
 
   defp parse_contest_type_and_year(contest_type_with_year) do

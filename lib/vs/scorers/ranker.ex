@@ -3,15 +3,15 @@ defmodule Vs.Scorers.Ranker do
   Calculates ranks for scorers based on league scoring settings.
   """
 
-  alias Vs.{Repo, Scorer, Players, Leagues}
+  alias Vs.{Repo, Scorer, Players, Seasons}
 
-  def calculate_ranks(league) do
-    league = Repo.preload(league, :universe)
-    scorers = Players.list_players_for_universe(league.universe_id)
-    scoring_categories = Leagues.get_active_scoring_categories(league)
+  def calculate_ranks(season) do
+    season = Repo.preload(season, :league)
+    scorers = Players.list_players_for_league(season.league_id)
+    scoring_categories = Seasons.get_active_scoring_categories(season)
 
     # Determine scoring type
-    scoring_type = league.scoring_type || "points"
+    scoring_type = season.scoring_type || "points"
 
     # We need to calculate ranks for each "stat key" (e.g. "2025", "2024", "projection")
     # Collect all unique keys from all scorers' stats
