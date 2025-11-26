@@ -5,7 +5,6 @@ defmodule Vs.Team.ColorSchemes do
 
   @type t :: %{
           id: String.t(),
-          name: String.t(),
           primary: String.t(),
           accent: String.t(),
           text: String.t()
@@ -13,127 +12,109 @@ defmodule Vs.Team.ColorSchemes do
 
   @schemes [
     %{
-      id: "blue-red",
-      name: "Blue & Red",
+      id: "cub",
       primary: "#0033a0",
       accent: "#c8102e",
       text: "#ffffff"
     },
     %{
-      id: "black-yellow",
-      name: "Black & Yellow",
+      id: "pirate",
       primary: "#000000",
       accent: "#ffb81c",
-      text: "#ffffff"
+      text: "#ffb81c"
     },
     %{
-      id: "black-silver",
-      name: "Black & Silver",
+      id: "raider",
       primary: "#000000",
       accent: "#a5acaf",
       text: "#ffffff"
     },
     %{
-      id: "green-yellow",
-      name: "Green & Yellow",
+      id: "packer",
       primary: "#003831",
       accent: "#efb21e",
       text: "#ffffff"
     },
     %{
-      id: "blue-orange",
-      name: "Blue & Orange",
+      id: "bronco",
       primary: "#002d72",
       accent: "#ff5910",
       text: "#ffffff"
     },
     %{
-      id: "black-sky",
-      name: "Black & Sky Blue",
+      id: "panther",
       primary: "#000000",
       accent: "#00a3e0",
       text: "#ffffff"
     },
     %{
-      id: "purple-yellow",
-      name: "Purple & Yellow",
+      id: "laker",
       primary: "#552583",
       accent: "#fdb927",
       text: "#ffffff"
     },
     %{
-      id: "navy-white",
-      name: "Navy & White",
+      id: "yankee",
       primary: "#0c2340",
       accent: "#ffffff",
       text: "#ffffff"
     },
     %{
-      id: "red-white",
-      name: "Red & White",
+      id: "cardinal",
       primary: "#c41e3a",
       accent: "#ffffff",
       text: "#ffffff"
     },
     %{
-      id: "green-white",
-      name: "Green & White",
-      primary: "#007a33",
-      accent: "#ffffff",
-      text: "#ffffff"
+      id: "eagle",
+      primary: "#ffffff",
+      accent: "#007a33",
+      text: "#007a33"
     },
     %{
-      id: "orange-black",
-      name: "Orange & Black",
+      id: "bengal",
       primary: "#fd5a1e",
       accent: "#000000",
       text: "#000000"
     },
     %{
-      id: "teal-orange",
-      name: "Teal & Orange",
+      id: "dolphin",
       primary: "#008e97",
       accent: "#fc4c02",
       text: "#ffffff"
     },
     %{
-      id: "purple-black",
-      name: "Purple & Black",
+      id: "raven",
       primary: "#241773",
       accent: "#000000",
       text: "#ffffff"
     },
     %{
-      id: "red-black",
-      name: "Red & Black",
+      id: "bull",
       primary: "#e03a3e",
       accent: "#000000",
       text: "#ffffff"
     },
     %{
-      id: "navy-gold",
-      name: "Navy & Gold",
+      id: "ram",
       primary: "#12284b",
       accent: "#ffc52f",
       text: "#ffffff"
     },
     %{
-      id: "burgundy-gold",
-      name: "Burgundy & Gold",
+      id: "commander",
       primary: "#773141",
       accent: "#ffb81c",
       text: "#ffffff"
     },
     %{
-      id: "teal-purple",
-      name: "Teal & Purple",
+      id: "hornet",
       primary: "#00788c",
       accent: "#1d1160",
       text: "#ffffff"
     },
     %{
-      id: "red-navy",
-      name: "Red & Navy",
+      id: "patriot",
       primary: "#c8102e",
       accent: "#0c2340",
       text: "#ffffff"

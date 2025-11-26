@@ -145,7 +145,6 @@ defmodule Vs.Plugins.Registry do
   defp parse_periods(periods_list) do
     Enum.map(periods_list, fn period ->
       %{
-        name: period["name"],
         sequence: period["sequence"],
         start_date: parse_date(period["start_date"]),
         end_date: parse_date(period["end_date"]),

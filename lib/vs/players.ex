@@ -26,6 +26,7 @@ defmodule Vs.Players do
         select: r.slots
       )
       |> Repo.all()
+      |> Enum.reject(&is_nil/1)
       |> Enum.flat_map(&Map.values/1)
       |> Enum.uniq()
 

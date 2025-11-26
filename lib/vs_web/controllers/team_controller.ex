@@ -23,13 +23,35 @@ defmodule VsWeb.TeamController do
     team = Teams.get_team!(team_id)
     all_teams = Teams.list_teams_for_league(league_id)
 
-    # Get current period
-    current_period = Teams.current_period_for_league(league_id)
+    # Get all periods for navigation
+    periods = Teams.list_periods_for_league(league_id)
 
-    # Get roster for current period
+    # Determine selected period
+    selected_period =
+      case Map.get(conn.params, "period") do
+        nil ->
+          Teams.current_period_for_league(league_id) || List.first(periods)
+
+        seq ->
+          sequence = String.to_integer(seq)
+          Enum.find(periods, fn p -> p.sequence == sequence end)
+      end
+
+    # Determine prev/next periods
+    {prev_period, next_period} =
+      if selected_period do
+        index = Enum.find_index(periods, &(&1.id == selected_period.id))
+        prev = if index > 0, do: Enum.at(periods, index - 1), else: nil
+        next = if index < length(periods) - 1, do: Enum.at(periods, index + 1), else: nil
+        {prev, next}
+      else
+        {nil, nil}
+      end
+
+    # Get roster for selected period
     roster =
-      if current_period do
-        Teams.get_roster_for_team(team_id, current_period.id)
+      if selected_period do
+        Teams.get_roster_for_team(team_id, selected_period.id)
       else
         nil
       end
@@ -48,7 +70,11 @@ defmodule VsWeb.TeamController do
       league: league,
       team: team,
       all_teams: all_teams,
-      current_period: current_period,
+      periods: periods,
+      # Renaming to current_period for view compatibility, but it's really selected
+      current_period: selected_period,
+      prev_period: prev_period,
+      next_period: next_period,
       roster: roster,
       position_groups: position_groups
     )

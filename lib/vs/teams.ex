@@ -64,6 +64,16 @@ defmodule Vs.Teams do
   end
 
   @doc """
+  Returns all periods for a league ordered by sequence.
+  """
+  def list_periods_for_league(league_id) do
+    Period
+    |> where([p], p.league_id == ^league_id)
+    |> order_by([p], asc: p.sequence)
+    |> Repo.all()
+  end
+
+  @doc """
   Determines the current active period for a league based on today's date.
 
   Returns the period that contains today's date, or the most recent period if none contains today.

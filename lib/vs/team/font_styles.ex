@@ -15,7 +15,15 @@ defmodule Vs.Team.FontStyles do
     },
     %{
       id: "wood",
-      name: "Woodcut"
+      name: "Wood"
+    },
+    %{
+      id: "state",
+      name: "State"
+    },
+    %{
+      id: "fast",
+      name: "Fast"
     }
   ]
 
