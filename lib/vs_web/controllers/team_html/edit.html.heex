@@ -1,30 +1,32 @@
 <div>
   <!-- Header -->
   <div class="mb-8">
-    <h1 class="text-3xl font-bold text-gray-900">Edit Roster</h1>
+    <h1 class="text-3xl font-bold text-gray-900">Edit Team</h1>
     <p class="mt-2 text-sm text-gray-600">
       <%= @team.name %> · <%= @league.name %>
     </p>
   </div>
 
-  <%= if @current_period do %>
-    <div class="mb-6 bg-blue-50 border border-blue-200 rounded-md p-4">
-      <p class="text-sm text-blue-800">
-        Editing roster for: <span class="font-medium"><%= @current_period.name %></span>
-      </p>
-    </div>
-  <% end %>
+
 
   <!-- Team Settings -->
   <div class="bg-white shadow sm:rounded-lg mb-6">
     <div class="px-4 py-5 sm:p-6">
       <h3 class="text-lg font-medium text-gray-900 mb-4">
-        Team Settings
+        Team Details
       </h3>
 
       <.form :let={f} for={@changeset} action={~p"/leagues/#{@league.id}/teams/#{@team.id}"} method="put">
         <div class="mb-4">
-          <.input field={f[:name]} label="Name" class="block text-sm font-medium text-gray-700" />
+          <label for={f[:name].id} class="block text-sm font-medium text-gray-700">Name</label>
+          <input
+            type="text"
+            name={f[:name].name}
+            id={f[:name].id}
+            value={f[:name].value}
+            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+          />
+          <.error :for={msg <- translate_errors(f.errors || [], :name)}><%= msg %></.error>
         </div>
 
         <div class="mb-6">
@@ -38,7 +40,6 @@
                     <span class="flex space-x-2">
                       <span class="size-6 rounded-full border border-gray-200" style={"background-color: #{scheme.primary}"} title="Primary"></span>
                       <span class="size-6 rounded-full border border-gray-200" style={"background-color: #{scheme.accent}"} title="Accent"></span>
-                      <span class="size-6 rounded-full border border-gray-200 flex items-center justify-center bg-gray-100" style={"color: #{scheme.text}"} title="Text">A</span>
                     </span>
                   </span>
                 </span>
@@ -50,7 +51,7 @@
         </div>
 
         <div class="mb-6">
-          <.label for="font_style">Font Style</.label>
+          <.label for="font_style">Logo Font</.label>
           <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 mt-2">
             <%= for style <- @font_styles do %>
               <label class="relative flex cursor-pointer rounded-lg border bg-white p-4 shadow-sm focus:outline-none">
@@ -60,9 +61,11 @@
                     <span class="block text-sm font-medium text-gray-900 mb-2">
                       <%= style.name %>
                     </span>
-                    <span class="text-2xl" style="font-family: monospace">
-                      Abc
-                    </span>
+                    <div class="flex items-center gap-1">
+                      <img src={"/images/#{style.id}/A.svg"} alt="A" class="h-8" />
+                      <img src={"/images/#{style.id}/B.svg"} alt="B" class="h-8" />
+                      <img src={"/images/#{style.id}/C.svg"} alt="C" class="h-8" />
+                    </div>
                   </span>
                 </span>
                 <span class={"pointer-events-none absolute -inset-px rounded-lg border-2 #{if f[:font_style].value == style.id, do: "border-blue-500", else: "border-transparent"}"} aria-hidden="true"></span>
@@ -73,38 +76,13 @@
         </div>
 
         <div class="flex justify-end">
-          <.button class="btn-primary">Save Changes</.button>
+          <button type="submit" class="btn-primary">Save changes</button>
         </div>
       </.form>
     </div>
   </div>
 
-  <!-- TODO: Implement roster editing functionality -->
-  <div class="bg-white shadow sm:rounded-lg">
-    <div class="px-4 py-5 sm:p-6">
-      <h3 class="text-lg font-medium text-gray-900 mb-4">
-        Roster Management
-      </h3>
-      <p class="text-sm text-gray-600 mb-6">
-        Roster editing functionality will be implemented here. You'll be able to add and remove players from your roster.
-      </p>
 
-      <div class="flex gap-4">
-        <a
-          href={~p"/leagues/#{@league.id}/teams/#{@team.id}"}
-          class="btn-secondary inline-flex items-center"
-        >
-          Back to team
-        </a>
-        <a
-          href={~p"/leagues/#{@league.id}/players"}
-          class="btn-primary inline-flex items-center"
-        >
-          Browse players
-        </a>
-      </div>
-    </div>
-  </div>
 </div>
 
 <script>

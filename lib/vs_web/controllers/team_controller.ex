@@ -83,6 +83,7 @@ defmodule VsWeb.TeamController do
   def edit(conn, %{"league_id" => league_id, "id" => team_id}) do
     league = Leagues.get_league!(league_id)
     team = Teams.get_team!(team_id)
+    changeset = Teams.change_team(team)
 
     # Get current period
     current_period = Teams.current_period_for_league(league_id)
@@ -104,7 +105,8 @@ defmodule VsWeb.TeamController do
       current_period: current_period,
       roster: roster,
       color_schemes: color_schemes,
-      font_styles: font_styles
+      font_styles: font_styles,
+      changeset: changeset
     )
   end
 

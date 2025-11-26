@@ -64,6 +64,19 @@ defmodule Vs.Teams do
   end
 
   @doc """
+  Returns an `%Ecto.Changeset{}` for tracking team changes.
+
+  ## Examples
+
+      iex> change_team(team)
+      %Ecto.Changeset{data: %Team{}}
+
+  """
+  def change_team(%Team{} = team, attrs \\ %{}) do
+    Team.changeset(team, attrs)
+  end
+
+  @doc """
   Returns all periods for a league ordered by sequence.
   """
   def list_periods_for_league(league_id) do

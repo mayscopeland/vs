@@ -29,7 +29,8 @@ defmodule VsWeb.Router do
     get "/leagues/:league_id/teams/", TeamController, :redirect_to_team
     get "/leagues/:league_id/teams/:id", TeamController, :show
     get "/leagues/:league_id/teams/:id/edit", TeamController, :edit
-    post "/leagues/:league_id/teams/:id/edit", TeamController, :update
+    put "/leagues/:league_id/teams/:id", TeamController, :update
+    patch "/leagues/:league_id/teams/:id", TeamController, :update
 
     # Player routes
     get "/leagues/:league_id/players", PlayerController, :list
