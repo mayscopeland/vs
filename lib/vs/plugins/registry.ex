@@ -187,8 +187,7 @@ defmodule Vs.Plugins.Registry do
         name: position["name"],
         display_name: position["display_name"],
         # Default to "Roster" if not specified
-        group: position["group"] || "Roster",
-        color: position["color"]
+        group: position["group"] || "Roster"
       }
     end)
   end
@@ -199,10 +198,24 @@ defmodule Vs.Plugins.Registry do
     Enum.map(presets_list, fn preset ->
       %{
         name: preset["name"],
-        positions: preset["positions"] || %{}
+        positions: parse_preset_positions(preset["positions"])
       }
     end)
   end
+
+  defp parse_preset_positions(nil), do: []
+
+  defp parse_preset_positions(positions_list) when is_list(positions_list) do
+    Enum.map(positions_list, fn pos ->
+      %{
+        position: pos["position"],
+        count: pos["count"],
+        color: pos["color"]
+      }
+    end)
+  end
+
+  defp parse_preset_positions(_), do: []
 
   defp parse_date(nil), do: nil
 

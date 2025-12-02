@@ -56,13 +56,13 @@ defmodule Vs.Team.ColorSchemes do
     %{
       id: "yankee",
       primary: "#0c2340",
-      accent: "#ffffff",
+      accent: "#0c2340",
       text: "#ffffff"
     },
     %{
       id: "cardinal",
       primary: "#c41e3a",
-      accent: "#ffffff",
+      accent: "#c41e3a",
       text: "#ffffff"
     },
     %{
@@ -117,6 +117,66 @@ defmodule Vs.Team.ColorSchemes do
       id: "patriot",
       primary: "#c8102e",
       accent: "#0c2340",
+      text: "#ffffff"
+    },
+    %{
+      id: "brave",
+      primary: "#13274f",
+      accent: "#ce1141",
+      text: "#ffffff"
+    },
+    %{
+      id: "brewer",
+      primary: "#002244",
+      accent: "#c5b358",
+      text: "#ffffff"
+    },
+    %{
+      id: "seahawk",
+      primary: "#002244",
+      accent: "#69be28",
+      text: "#ffffff"
+    },
+    %{
+      id: "brown",
+      primary: "#311d00",
+      accent: "#ff3c00",
+      text: "#ffffff"
+    },
+    %{
+      id: "charger",
+      primary: "#0080c6",
+      accent: "#ffc20e",
+      text: "#ffffff"
+    },
+    %{
+      id: "falcon",
+      primary: "#000000",
+      accent: "#a71930",
+      text: "#ffffff"
+    },
+    %{
+      id: "sun",
+      primary: "#1d1160",
+      accent: "#e56020",
+      text: "#ffffff"
+    },
+    %{
+      id: "king",
+      primary: "#5a2d81",
+      accent: "#63727a",
+      text: "#ffffff"
+    },
+    %{
+      id: "saint",
+      primary: "#101820",
+      accent: "#d3bc8d",
+      text: "#ffffff"
+    },
+    %{
+      id: "titan",
+      primary: "#0c2340",
+      accent: "#4b92db",
       text: "#ffffff"
     }
   ]

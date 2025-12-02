@@ -7,7 +7,7 @@ defmodule Vs.Season do
     field :name, :string
     field :scoring_type, :string
     field :scoring_settings, :map
-    field :roster_settings, :map
+    field :roster_settings, {:array, :map}
 
     belongs_to :league, Vs.League
 

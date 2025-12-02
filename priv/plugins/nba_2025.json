@@ -433,179 +433,399 @@
     {
       "name": "PG",
       "display_name": "Point Guard",
-      "group": "Roster",
-      "color": "blue"
+      "group": "Roster"
     },
     {
       "name": "SG",
       "display_name": "Shooting Guard",
-      "group": "Roster",
-      "color": "green"
+      "group": "Roster"
     },
     {
       "name": "SF",
       "display_name": "Small Forward",
-      "group": "Roster",
-      "color": "yellow"
+      "group": "Roster"
     },
     {
       "name": "PF",
       "display_name": "Power Forward",
-      "group": "Roster",
-      "color": "orange"
+      "group": "Roster"
     },
     {
       "name": "C",
       "display_name": "Center",
-      "group": "Roster",
-      "color": "red"
+      "group": "Roster"
     },
     {
       "name": "G",
       "display_name": "Guard",
-      "group": "Roster",
-      "color": "white"
+      "group": "Roster"
     },
     {
       "name": "F",
       "display_name": "Forward",
-      "group": "Roster",
-      "color": "white"
+      "group": "Roster"
     },
     {
       "name": "PF/C",
       "display_name": "Power Forward/Center",
-      "group": "Roster",
-      "color": "white"
+      "group": "Roster"
     },
     {
       "name": "F/C",
       "display_name": "Forward/Center",
-      "group": "Roster",
-      "color": "white"
+      "group": "Roster"
     },
     {
       "name": "G/F",
       "display_name": "Guard/Forward",
-      "group": "Roster",
-      "color": "white"
+      "group": "Roster"
     },
     {
       "name": "UT",
       "display_name": "Utility",
-      "group": "Roster",
-      "color": "white"
+      "group": "Roster"
     },
     {
       "name": "BN",
       "display_name": "Bench",
-      "group": "Roster",
-      "color": "white"
+      "group": "Roster"
     }
   ],
   "position_presets": [
     {
       "name": "Yahoo",
-      "positions": {
-        "PG": 1,
-        "SG": 1,
-        "SF": 1,
-        "PF": 1,
-        "C": 2,
-        "G": 1,
-        "F": 1,
-        "UT": 2,
-        "BN": 3
-      }
+      "positions": [
+        {
+          "position": "PG",
+          "count": 1,
+          "color": "blue"
+        },
+        {
+          "position": "SG",
+          "count": 1,
+          "color": "green"
+        },
+        {
+          "position": "G",
+          "count": 1,
+          "color": "white"
+        },
+        {
+          "position": "SF",
+          "count": 1,
+          "color": "yellow"
+        },
+        {
+          "position": "PF",
+          "count": 1,
+          "color": "orange"
+        },
+        {
+          "position": "F",
+          "count": 1,
+          "color": "white"
+        },
+        {
+          "position": "C",
+          "count": 2,
+          "color": "red"
+        },
+        {
+          "position": "UT",
+          "count": 2,
+          "color": "white"
+        },
+        {
+          "position": "BN",
+          "count": 3,
+          "color": "white"
+        }
+      ]
     },
     {
       "name": "Yahoo High Score",
-      "positions": {
-        "G": 2,
-        "F/C": 3,
-        "UT": 1,
-        "BN": 4
-      }
+      "positions": [
+        {
+          "position": "G",
+          "count": 2,
+          "color": "blue"
+        },
+        {
+          "position": "F/C",
+          "count": 3,
+          "color": "red"
+        },
+        {
+          "position": "UT",
+          "count": 1,
+          "color": "white"
+        },
+        {
+          "position": "BN",
+          "count": 4,
+          "color": "white"
+        }
+      ]
     },
     {
       "name": "Sleeper",
-      "positions": {
-        "PG": 1,
-        "SG": 1,
-        "SF": 1,
-        "PF": 1,
-        "C": 1,
-        "G": 1,
-        "F": 1,
-        "UT": 2,
-        "BN": 5
-      }
+      "positions": [
+        {
+          "position": "PG",
+          "count": 1,
+          "color": "blue"
+        },
+        {
+          "position": "SG",
+          "count": 1,
+          "color": "green"
+        },
+        {
+          "position": "G",
+          "count": 1,
+          "color": "white"
+        },
+        {
+          "position": "SF",
+          "count": 1,
+          "color": "yellow"
+        },
+        {
+          "position": "PF",
+          "count": 1,
+          "color": "orange"
+        },
+        {
+          "position": "F",
+          "count": 1,
+          "color": "white"
+        },
+        {
+          "position": "C",
+          "count": 1,
+          "color": "red"
+        },
+        {
+          "position": "UT",
+          "count": 2,
+          "color": "white"
+        },
+        {
+          "position": "BN",
+          "count": 5,
+          "color": "white"
+        }
+      ]
     },
     {
       "name": "ESPN",
-      "positions": {
-        "PG": 1,
-        "SG": 1,
-        "SF": 1,
-        "PF": 1,
-        "C": 1,
-        "G": 1,
-        "F": 1,
-        "UT": 3,
-        "BN": 3
-      }
+      "positions": [
+        {
+          "position": "PG",
+          "count": 1,
+          "color": "blue"
+        },
+        {
+          "position": "SG",
+          "count": 1,
+          "color": "green"
+        },
+        {
+          "position": "SF",
+          "count": 1,
+          "color": "yellow"
+        },
+        {
+          "position": "PF",
+          "count": 1,
+          "color": "orange"
+        },
+        {
+          "position": "C",
+          "count": 1,
+          "color": "red"
+        },
+        {
+          "position": "G",
+          "count": 1,
+          "color": "white"
+        },
+        {
+          "position": "F",
+          "count": 1,
+          "color": "white"
+        },
+        {
+          "position": "UT",
+          "count": 3,
+          "color": "white"
+        },
+        {
+          "position": "BN",
+          "count": 3,
+          "color": "white"
+        }
+      ]
     },
     {
       "name": "CBS",
-      "positions": {
-        "G": 4,
-        "F": 4,
-        "C": 1,
-        "UT": 1,
-        "BN": 3
-      }
+      "positions": [
+        {
+          "position": "G",
+          "count": 4,
+          "color": "blue"
+        },
+        {
+          "position": "F",
+          "count": 4,
+          "color": "yellow"
+        },
+        {
+          "position": "C",
+          "count": 1,
+          "color": "red"
+        },
+        {
+          "position": "UT",
+          "count": 1,
+          "color": "white"
+        },
+        {
+          "position": "BN",
+          "count": 3,
+          "color": "white"
+        }
+      ]
     },
     {
       "name": "Fantrax",
-      "positions": {
-        "G": 4,
-        "F": 4,
-        "C": 1,
-        "UT": 1,
-        "BN": 4
-      }
+      "positions": [
+        {
+          "position": "G",
+          "count": 4,
+          "color": "blue"
+        },
+        {
+          "position": "F",
+          "count": 4,
+          "color": "yellow"
+        },
+        {
+          "position": "C",
+          "count": 1,
+          "color": "red"
+        },
+        {
+          "position": "UT",
+          "count": 1,
+          "color": "white"
+        },
+        {
+          "position": "BN",
+          "count": 4,
+          "color": "white"
+        }
+      ]
     },
     {
       "name": "Ottoneu",
-      "positions": {
-        "G": 3,
-        "F": 2,
-        "C": 1,
-        "G/F": 1,
-        "F/C": 1,
-        "UT": 2,
-        "BN": 3
-      }
+      "positions": [
+        {
+          "position": "G",
+          "count": 3,
+          "color": "blue"
+        },
+        {
+          "position": "F",
+          "count": 2,
+          "color": "yellow"
+        },
+        {
+          "position": "C",
+          "count": 1,
+          "color": "red"
+        },
+        {
+          "position": "G/F",
+          "count": 1,
+          "color": "white"
+        },
+        {
+          "position": "F/C",
+          "count": 1,
+          "color": "white"
+        },
+        {
+          "position": "UT",
+          "count": 2,
+          "color": "white"
+        },
+        {
+          "position": "BN",
+          "count": 3,
+          "color": "white"
+        }
+      ]
     },
     {
       "name": "Underdog",
-      "positions": {
-        "G": 2,
-        "F": 2,
-        "C": 1,
-        "UT": 1,
-        "BN": 10
-      }
+      "positions": [
+        {
+          "position": "G",
+          "count": 2,
+          "color": "blue"
+        },
+        {
+          "position": "F",
+          "count": 2,
+          "color": "yellow"
+        },
+        {
+          "position": "C",
+          "count": 1,
+          "color": "red"
+        },
+        {
+          "position": "UT",
+          "count": 1,
+          "color": "white"
+        },
+        {
+          "position": "BN",
+          "count": 10,
+          "color": "white"
+        }
+      ]
     },
     {
       "name": "NFBKC",
-      "positions": {
-        "G": 4,
-        "F": 4,
-        "C": 2,
-        "UT": 2,
-        "BN": 4
-      }
+      "positions": [
+        {
+          "position": "G",
+          "count": 4,
+          "color": "blue"
+        },
+        {
+          "position": "F",
+          "count": 4,
+          "color": "yellow"
+        },
+        {
+          "position": "C",
+          "count": 2,
+          "color": "red"
+        },
+        {
+          "position": "UT",
+          "count": 2,
+          "color": "white"
+        },
+        {
+          "position": "BN",
+          "count": 4,
+          "color": "white"
+        }
+      ]
     }
   ]
 }

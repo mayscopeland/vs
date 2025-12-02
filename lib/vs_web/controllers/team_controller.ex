@@ -62,13 +62,16 @@ defmodule VsWeb.TeamController do
     # Build position groups structure
     position_groups = Teams.build_position_groups(roster_positions, roster, season)
 
-    # Get position colors from plugin config
-    plugin_config =
-      Vs.Plugins.Registry.get_plugin_config!(season.league.contest_type, season.season_year)
-
+    # Get position colors from season roster settings
     position_colors =
-      plugin_config.available_positions
-      |> Map.new(fn p -> {p.name, p.color} end)
+      (season.roster_settings || [])
+      |> Enum.map(fn setting ->
+        # Handle string keys from JSON
+        position = Map.get(setting, "position") || Map.get(setting, :position)
+        color = Map.get(setting, "color") || Map.get(setting, :color)
+        {position, color}
+      end)
+      |> Map.new()
 
     # Get scoring categories (will implement later when showing scores)
     # scoring_categories = Leagues.list_scoring_categories_for_league(league_id)

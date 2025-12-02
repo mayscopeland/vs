@@ -67,13 +67,16 @@ defmodule VsWeb.PlayerController do
       {"#{current_year - 3} Stats", to_string(current_year - 3)}
     ]
 
-    # Get position colors from plugin config
-    plugin_config =
-      Vs.Plugins.Registry.get_plugin_config!(season.league.contest_type, season.season_year)
-
+    # Get position colors from season roster settings
     position_colors =
-      plugin_config.available_positions
-      |> Map.new(fn p -> {p.name, p.color} end)
+      (season.roster_settings || [])
+      |> Enum.map(fn setting ->
+        # Handle string keys from JSON
+        position = Map.get(setting, "position") || Map.get(setting, :position)
+        color = Map.get(setting, "color") || Map.get(setting, :color)
+        {position, color}
+      end)
+      |> Map.new()
 
     render(conn, :list,
       season: season,

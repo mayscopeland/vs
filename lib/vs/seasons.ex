@@ -53,7 +53,7 @@ defmodule Vs.Seasons do
       # Get defaults from presets
       roster_settings =
         case List.first(plugin_config.position_presets) do
-          nil -> %{}
+          nil -> []
           preset -> preset.positions
         end
 
@@ -103,25 +103,35 @@ defmodule Vs.Seasons do
     config =
       Vs.Plugins.Registry.get_plugin_config!(season.league.contest_type, season.season_year)
 
-    settings = season.roster_settings || %{}
+    settings = season.roster_settings || []
 
-    # Create a map of available positions for ordering and metadata
-    available_positions = config.available_positions
+    # We want to return a list of %{position: "PG", count: 1, group: <from config>, color: <from settings>}
+    # We iterate through `settings` (the list) to maintain the user-defined order.
 
-    # We want to return a list of %{position: "PG", count: 1, group: <from config>, ...}
-    # We iterate through available_positions to maintain order
-    available_positions
-    |> Enum.filter(fn pos -> Map.has_key?(settings, pos.name) end)
-    |> Enum.map(fn pos ->
-      count = Map.get(settings, pos.name)
+    # Create a lookup for available positions metadata (display_name, group)
+    available_positions_map =
+      config.available_positions
+      |> Map.new(fn p -> {p.name, p} end)
+
+    settings
+    |> Enum.map(fn pos_setting ->
+      # Handle potential string/atom keys from JSON/Ecto
+      position_name = Map.get(pos_setting, "position") || Map.get(pos_setting, :position)
+      count = Map.get(pos_setting, "count") || Map.get(pos_setting, :count)
+      color = Map.get(pos_setting, "color") || Map.get(pos_setting, :color)
+
+      position_meta =
+        Map.get(available_positions_map, position_name, %{
+          display_name: position_name,
+          group: "Roster"
+        })
 
       %{
-        position: pos.name,
-        display_name: pos.display_name,
+        position: position_name,
+        display_name: position_meta.display_name,
         count: count,
-        # Use group from position config
-        group: pos.group,
-        # We can add logic for sub-positions later if needed
+        group: position_meta.group,
+        color: color,
         sub_positions: nil
       }
     end)
